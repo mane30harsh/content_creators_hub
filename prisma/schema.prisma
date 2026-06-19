@@ -1,0 +1,123 @@
+// Prisma schema for Content Creators Hub
+// Run `npx prisma migrate dev --name init` after setting DATABASE_URL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------
+// Enums
+// ---------------------------------------------------
+
+enum Role {
+  CREATOR
+  BRAND
+  ADMIN
+}
+
+// ---------------------------------------------------
+// Auth.js (NextAuth) required models
+// https://authjs.dev/getting-started/adapters/prisma
+// ---------------------------------------------------
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ---------------------------------------------------
+// Core domain models
+// ---------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String? // hashed, only used for credentials login
+  role          Role      @default(CREATOR)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  creatorProfile CreatorProfile?
+  brandProfile   BrandProfile?
+
+  @@map("users")
+}
+
+// Extended profile data, kept separate from User so the
+// auth table stays lean and role payloads stay independent.
+model CreatorProfile {
+  id       String  @id @default(cuid())
+  userId   String  @unique
+  bio      String?
+  niche    String?
+  website  String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("creator_profiles")
+}
+
+model BrandProfile {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  companyName String?
+  industry    String?
+  website     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("brand_profiles")
+}
