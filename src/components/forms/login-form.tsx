@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 import { loginSchema, type LoginInput } from "@/lib/validations/auth";
+import { ROLE_HOME } from "@/lib/roles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,7 +22,8 @@ import {
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/";
+  const callbackUrl = searchParams.get("callbackUrl");
+  const { update } = useSession();
   const [serverError, setServerError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -39,14 +41,17 @@ export function LoginForm() {
       redirect: false,
     });
 
-    setIsSubmitting(false);
-
     if (result?.error) {
       setServerError("Invalid email or password.");
+      setIsSubmitting(false);
       return;
     }
 
-    router.push(callbackUrl);
+    const session = await update();
+    const role = session?.user?.role;
+    const destination = callbackUrl ?? (role ? ROLE_HOME[role] : "/");
+
+    router.push(destination);
     router.refresh();
   }
 

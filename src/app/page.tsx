@@ -1,7 +1,16 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { ROLE_HOME, isAppRole } from "@/lib/roles";
 import { Button } from "@/components/ui/button";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
+
+  if (session?.user?.role && isAppRole(session.user.role)) {
+    redirect(ROLE_HOME[session.user.role]);
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 text-center">
       <h1 className="text-4xl font-bold tracking-tight">Content Creators Hub</h1>
