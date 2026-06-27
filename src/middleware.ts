@@ -4,8 +4,12 @@ import type { AppRole } from "@/lib/roles";
 
 // Map each protected path prefix to the roles allowed to access it.
 const PROTECTED_PREFIXES: { prefix: string; roles: AppRole[] }[] = [
-  { prefix: "/creator", roles: ["CREATOR", "ADMIN"] },
-  { prefix: "/brand", roles: ["BRAND", "ADMIN"] },
+  { prefix: "/creator/onboarding", roles: ["CREATOR", "ADMIN"] },
+  { prefix: "/creator/profile", roles: ["CREATOR", "ADMIN"] },
+  { prefix: "/creator/dashboard", roles: ["CREATOR", "ADMIN"] },
+  { prefix: "/brand/onboarding", roles: ["BRAND", "ADMIN"] },
+  { prefix: "/brand/profile", roles: ["BRAND", "ADMIN"] },
+  { prefix: "/brand/dashboard", roles: ["BRAND", "ADMIN"] },
   { prefix: "/admin", roles: ["ADMIN"] },
 ];
 
