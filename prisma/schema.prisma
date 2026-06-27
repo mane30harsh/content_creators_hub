@@ -1,5 +1,7 @@
-// Prisma schema for Content Creators Hub
-// Run `npx prisma migrate dev --name init` after setting DATABASE_URL
+// =============================================================
+// Content Creators Hub — Prisma Schema
+// PostgreSQL · Auth.js v5 · Production-grade
+// =============================================================
 
 generator client {
   provider = "prisma-client-js"
@@ -10,9 +12,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ---------------------------------------------------
-// Enums
-// ---------------------------------------------------
+// =============================================================
+// ENUMS
+// =============================================================
 
 enum Role {
   CREATOR
@@ -20,10 +22,87 @@ enum Role {
   ADMIN
 }
 
-// ---------------------------------------------------
-// Auth.js (NextAuth) required models
+enum CampaignStatus {
+  DRAFT
+  OPEN
+  IN_REVIEW
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum ApplicationStatus {
+  PENDING
+  SHORTLISTED
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum DeliverableType {
+  INSTAGRAM_POST
+  INSTAGRAM_REEL
+  INSTAGRAM_STORY
+  YOUTUBE_VIDEO
+  YOUTUBE_SHORT
+  TIKTOK_VIDEO
+  TWITTER_POST
+  LINKEDIN_POST
+  BLOG_POST
+  PODCAST_EPISODE
+  OTHER
+}
+
+enum NotificationType {
+  APPLICATION_RECEIVED   // brand: a creator applied
+  APPLICATION_UPDATED    // creator: brand updated their application
+  MESSAGE_RECEIVED       // new message in a thread
+  CAMPAIGN_PUBLISHED     // creator follows brand that published campaign
+  REVIEW_RECEIVED        // user got a new review
+  FOLLOW                 // someone followed you
+  CAMPAIGN_REMINDER      // deadline approaching
+  ADMIN_NOTICE           // admin message
+  SYSTEM                 // system-level
+}
+
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  FAKE_PROFILE
+  INAPPROPRIATE_CONTENT
+  FRAUD
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  UNDER_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum AdminActionType {
+  USER_BANNED
+  USER_UNBANNED
+  USER_WARNED
+  CAMPAIGN_REMOVED
+  POST_REMOVED
+  REPORT_RESOLVED
+  REPORT_DISMISSED
+  REVIEW_REMOVED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  LINK
+}
+
+// =============================================================
+// AUTH.JS REQUIRED TABLES
 // https://authjs.dev/getting-started/adapters/prisma
-// ---------------------------------------------------
+// =============================================================
 
 model Account {
   id                String  @id @default(cuid())
@@ -42,6 +121,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
   @@map("accounts")
 }
 
@@ -53,6 +133,7 @@ model Session {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("sessions")
 }
 
@@ -65,9 +146,9 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
-// ---------------------------------------------------
-// Core domain models
-// ---------------------------------------------------
+// =============================================================
+// USER — lean auth entity, role is the only domain field here
+// =============================================================
 
 model User {
   id            String    @id @default(cuid())
@@ -75,49 +156,621 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
-  password      String? // hashed, only used for credentials login
+  password      String?   // hashed; null for OAuth-only accounts
   role          Role      @default(CREATOR)
+  isActive      Boolean   @default(true)  // soft ban toggle
+  isFeatured    Boolean   @default(false) // admin can feature creators/brands
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Auth.js
   accounts Account[]
   sessions Session[]
 
+  // Profiles (one per role)
   creatorProfile CreatorProfile?
   brandProfile   BrandProfile?
 
+  // Social
+  posts            Post[]
+  comments         Comment[]
+  likes            Like[]
+  followersRel     Follow[]       @relation("Following") // people following this user
+  followingRel     Follow[]       @relation("Follower")  // people this user follows
+
+  // Marketplace
+  applications     CampaignApplication[] // creator side
+  savedCampaigns   SavedCampaign[]
+  savedCreators    SavedCreator[]        // brand side
+
+  // Reviews given and received
+  reviewsGiven     Review[]       @relation("ReviewAuthor")
+  reviewsReceived  Review[]       @relation("ReviewSubject")
+
+  // Messaging
+  threadParticipants MessageThreadParticipant[]
+  sentMessages       Message[]
+
+  // Notifications
+  notifications    Notification[]
+
+  // Reports filed and reports about this user
+  reportsFiled     Report[]       @relation("Reporter")
+  reportsReceived  Report[]       @relation("Reported")
+
+  // Admin
+  adminLogs        AdminActionLog[] @relation("AdminActor")
+  adminLogsTargeted AdminActionLog[] @relation("AdminTarget")
+
+  @@index([role])
+  @@index([isActive])
+  @@index([createdAt])
   @@map("users")
 }
 
-// Extended profile data, kept separate from User so the
-// auth table stays lean and role payloads stay independent.
-model CreatorProfile {
-  id       String  @id @default(cuid())
-  userId   String  @unique
-  bio      String?
-  niche    String?
-  website  String?
+// =============================================================
+// CREATOR PROFILE
+// =============================================================
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+model CreatorProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  displayName String?
+  bio         String?  @db.Text
+  avatar      String?  // URL
+  coverImage  String?  // URL
+
+  // Discovery & matching
+  niche       String[] // e.g. ["Fashion", "Lifestyle", "Tech"]
+  tags        String[] // freeform tags
+  country     String?
+  city        String?
+  language    String[] @default(["English"])
+
+  // Social accounts
+  instagramHandle  String?
+  instagramFollowers Int?
+  youtubeHandle    String?
+  youtubeSubscribers Int?
+  tiktokHandle     String?
+  tiktokFollowers  Int?
+  twitterHandle    String?
+  twitterFollowers Int?
+  linkedinUrl      String?
+  websiteUrl       String?
+
+  // Rates (stored in cents to avoid float precision issues)
+  baseRateCents    Int?   // minimum per campaign
+  currency         String @default("USD")
+
+  // Aggregated stats (updated by background jobs)
+  totalEarningsCents Int @default(0)
+  avgRating          Float?
+  reviewCount        Int   @default(0)
+  campaignCount      Int   @default(0)
+
+  // Verification
+  isVerified         Boolean @default(false)
+  verifiedAt         DateTime?
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  portfolioItems PortfolioItem[]
+  applications   CampaignApplication[]
+  savedByBrands  SavedCreator[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([niche])
+  @@index([country])
+  @@index([isVerified])
+  @@index([avgRating])
   @@map("creator_profiles")
 }
+
+// =============================================================
+// BRAND PROFILE
+// =============================================================
 
 model BrandProfile {
   id          String  @id @default(cuid())
   userId      String  @unique
   companyName String?
+  logo        String? // URL
+  coverImage  String? // URL
+  bio         String? @db.Text
   industry    String?
-  website     String?
+  websiteUrl  String?
+  country     String?
+  city        String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Social
+  instagramHandle String?
+  linkedinUrl     String?
+  twitterHandle   String?
+
+  // Trust signals
+  isVerified      Boolean  @default(false)
+  verifiedAt      DateTime?
+
+  // Aggregated stats
+  avgRating       Float?
+  reviewCount     Int      @default(0)
+  campaignCount   Int      @default(0)
+  totalSpentCents Int      @default(0)
+
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaigns     Campaign[]
+  savedCreators SavedCreator[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([industry])
+  @@index([country])
+  @@index([isVerified])
   @@map("brand_profiles")
+}
+
+// =============================================================
+// PORTFOLIO ITEM — creator's past work examples
+// =============================================================
+
+model PortfolioItem {
+  id              String  @id @default(cuid())
+  creatorProfileId String
+  title           String
+  description     String? @db.Text
+  mediaType       MediaType
+  mediaUrl        String  // URL to image/video/doc
+  externalUrl     String? // original post URL
+  thumbnailUrl    String?
+  tags            String[]
+  sortOrder       Int     @default(0)
+  isPublic        Boolean @default(true)
+
+  creatorProfile CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([creatorProfileId])
+  @@index([isPublic])
+  @@map("portfolio_items")
+}
+
+// =============================================================
+// CAMPAIGN — brand posts a campaign for creators to apply
+// =============================================================
+
+model Campaign {
+  id             String         @id @default(cuid())
+  brandProfileId String
+  title          String
+  description    String         @db.Text
+  status         CampaignStatus @default(DRAFT)
+
+  // Targeting
+  niche          String[]       // preferred creator niches
+  minFollowers   Int?
+  maxFollowers   Int?
+  country        String[]       // target countries
+  language       String[]
+
+  // Deliverables
+  deliverableType DeliverableType
+  deliverableCount Int           @default(1)
+  deliverableNotes String?       @db.Text
+
+  // Budget (cents)
+  budgetMinCents Int?
+  budgetMaxCents Int?
+  currency       String         @default("USD")
+
+  // Slots
+  maxApplications Int?          // null = unlimited
+  maxAccepted     Int           @default(1)
+
+  // Timeline
+  applicationDeadline DateTime?
+  campaignStartDate   DateTime?
+  campaignEndDate     DateTime?
+
+  // Discovery
+  isPublic       Boolean        @default(true)
+  isFeatured     Boolean        @default(false)
+  tags           String[]
+  coverImage     String?
+
+  brandProfile   BrandProfile          @relation(fields: [brandProfileId], references: [id], onDelete: Cascade)
+  applications   CampaignApplication[]
+  savedBy        SavedCampaign[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([brandProfileId])
+  @@index([niche])
+  @@index([country])
+  @@index([isPublic, status])
+  @@index([isFeatured])
+  @@index([applicationDeadline])
+  @@map("campaigns")
+}
+
+// =============================================================
+// CAMPAIGN APPLICATION — creator applies to a campaign
+// =============================================================
+
+model CampaignApplication {
+  id               String            @id @default(cuid())
+  campaignId       String
+  creatorProfileId String
+  userId           String            // denormalized for fast auth checks
+
+  status           ApplicationStatus @default(PENDING)
+  pitch            String?           @db.Text  // creator's cover letter
+  proposedRateCents Int?
+  currency         String            @default("USD")
+
+  // Brand feedback
+  brandNote        String?           @db.Text
+  rejectionReason  String?
+
+  // Tracking
+  shortlistedAt    DateTime?
+  acceptedAt       DateTime?
+  rejectedAt       DateTime?
+  withdrawnAt      DateTime?
+
+  campaign       Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  creatorProfile CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([campaignId, creatorProfileId]) // one application per creator per campaign
+  @@index([campaignId, status])
+  @@index([creatorProfileId])
+  @@index([userId])
+  @@index([status])
+  @@map("campaign_applications")
+}
+
+// =============================================================
+// SAVED CAMPAIGN — creator bookmarks a campaign
+// =============================================================
+
+model SavedCampaign {
+  id         String @id @default(cuid())
+  userId     String
+  campaignId String
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, campaignId])
+  @@index([userId])
+  @@map("saved_campaigns")
+}
+
+// =============================================================
+// SAVED CREATOR — brand bookmarks a creator profile
+// =============================================================
+
+model SavedCreator {
+  id               String @id @default(cuid())
+  userId           String // the brand user
+  brandProfileId   String
+  creatorProfileId String
+
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brandProfile   BrandProfile   @relation(fields: [brandProfileId], references: [id], onDelete: Cascade)
+  creatorProfile CreatorProfile @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([brandProfileId, creatorProfileId])
+  @@index([brandProfileId])
+  @@map("saved_creators")
+}
+
+// =============================================================
+// FOLLOW — user follows another user
+// =============================================================
+
+model Follow {
+  id          String @id @default(cuid())
+  followerId  String // the user who pressed "Follow"
+  followingId String // the user being followed
+
+  follower  User @relation("Follower",  fields: [followerId],  references: [id], onDelete: Cascade)
+  following User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+  @@map("follows")
+}
+
+// =============================================================
+// REVIEW — creator reviews brand (and vice versa) after a campaign
+// =============================================================
+
+model Review {
+  id        String @id @default(cuid())
+  authorId  String // who wrote the review
+  subjectId String // who the review is about
+  campaignId String? // optional: tie to a specific campaign
+
+  rating    Int    // 1–5
+  title     String?
+  body      String? @db.Text
+  isPublic  Boolean @default(true)
+
+  // Moderation
+  isRemoved     Boolean   @default(false)
+  removedReason String?
+  removedAt     DateTime?
+
+  author  User @relation("ReviewAuthor",  fields: [authorId],  references: [id], onDelete: Cascade)
+  subject User @relation("ReviewSubject", fields: [subjectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([subjectId, isPublic])
+  @@index([authorId])
+  @@index([campaignId])
+  @@map("reviews")
+}
+
+// =============================================================
+// MESSAGE THREAD — conversation between two or more users
+// =============================================================
+
+model MessageThread {
+  id      String @id @default(cuid())
+  subject String?
+
+  // Optional: tie to a campaign (e.g. "Re: Summer Campaign")
+  campaignId String?
+
+  participants MessageThreadParticipant[]
+  messages     Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([campaignId])
+  @@map("message_threads")
+}
+
+model MessageThreadParticipant {
+  id       String @id @default(cuid())
+  threadId String
+  userId   String
+
+  // Track last read for unread badge counts
+  lastReadAt DateTime?
+
+  thread MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user   User          @relation(fields: [userId],   references: [id], onDelete: Cascade)
+
+  @@unique([threadId, userId])
+  @@index([userId])
+  @@map("message_thread_participants")
+}
+
+// =============================================================
+// MESSAGE — individual message inside a thread
+// =============================================================
+
+model Message {
+  id       String  @id @default(cuid())
+  threadId String
+  senderId String
+  body     String  @db.Text
+  mediaUrl String? // optional attachment
+
+  isEdited  Boolean   @default(false)
+  editedAt  DateTime?
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  thread MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  sender User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([threadId, createdAt])
+  @@index([senderId])
+  @@map("messages")
+}
+
+// =============================================================
+// NOTIFICATION
+// =============================================================
+
+model Notification {
+  id     String           @id @default(cuid())
+  userId String           // recipient
+  type   NotificationType
+  title  String
+  body   String?
+
+  // Flexible reference to whatever triggered this notification
+  referenceId   String? // e.g. campaignId, applicationId, messageId
+  referenceType String? // e.g. "Campaign", "CampaignApplication", "Message"
+  actionUrl     String? // deep link for mobile / web
+
+  isRead   Boolean   @default(false)
+  readAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+// =============================================================
+// POST — public posts / updates by creators or brands
+// =============================================================
+
+model Post {
+  id       String  @id @default(cuid())
+  authorId String
+  title    String?
+  body     String  @db.Text
+  mediaUrls String[] // array of media URLs
+  tags     String[]
+  isPublic Boolean @default(true)
+
+  // Moderation
+  isRemoved     Boolean   @default(false)
+  removedReason String?
+  removedAt     DateTime?
+
+  author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments Comment[]
+  likes    Like[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([isPublic, createdAt])
+  @@index([tags])
+  @@map("posts")
+}
+
+// =============================================================
+// COMMENT — on a post
+// =============================================================
+
+model Comment {
+  id       String  @id @default(cuid())
+  postId   String
+  authorId String
+  body     String  @db.Text
+
+  // Threading: null = top-level, set = reply to a comment
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies  Comment[] @relation("CommentReplies")
+
+  // Moderation
+  isRemoved     Boolean   @default(false)
+  removedReason String?
+  removedAt     DateTime?
+
+  post   Post @relation(fields: [postId],   references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes  Like[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postId])
+  @@index([authorId])
+  @@index([parentId])
+  @@map("comments")
+}
+
+// =============================================================
+// LIKE — polymorphic: can like a Post or a Comment
+// =============================================================
+
+model Like {
+  id        String  @id @default(cuid())
+  userId    String
+  postId    String?
+  commentId String?
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post    Post?    @relation(fields: [postId],    references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  // A user can only like a given post or comment once
+  @@unique([userId, postId])
+  @@unique([userId, commentId])
+  @@index([postId])
+  @@index([commentId])
+  @@map("likes")
+}
+
+// =============================================================
+// REPORT — user reports content or another user
+// =============================================================
+
+model Report {
+  id         String       @id @default(cuid())
+  reporterId String
+  reportedId String       // user being reported
+
+  reason     ReportReason
+  details    String?      @db.Text
+  status     ReportStatus @default(PENDING)
+
+  // What was reported (optional: specific content)
+  referenceId   String? // e.g. postId, campaignId
+  referenceType String? // e.g. "Post", "Campaign", "Review"
+
+  // Admin resolution
+  resolvedBy  String?
+  resolvedAt  DateTime?
+  resolution  String?
+
+  reporter User @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reported User @relation("Reported", fields: [reportedId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([reportedId])
+  @@index([reporterId])
+  @@map("reports")
+}
+
+// =============================================================
+// ADMIN ACTION LOG — immutable audit trail
+// =============================================================
+
+model AdminActionLog {
+  id       String          @id @default(cuid())
+  adminId  String          // which admin performed the action
+  targetId String?         // which user was affected (if applicable)
+  action   AdminActionType
+  reason   String?         @db.Text
+
+  // Snapshot of what changed (JSON blob for flexibility)
+  metadata Json?
+
+  // Reference to affected content
+  referenceId   String?
+  referenceType String?
+
+  admin  User  @relation("AdminActor",  fields: [adminId],  references: [id], onDelete: Cascade)
+  target User? @relation("AdminTarget", fields: [targetId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@index([targetId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("admin_action_logs")
 }
