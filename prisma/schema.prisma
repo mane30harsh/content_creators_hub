@@ -22,6 +22,12 @@ enum Role {
   ADMIN
 }
 
+enum AvailabilityStatus {
+  AVAILABLE
+  LIMITED
+  FULLY_BOOKED
+}
+
 enum CampaignStatus {
   DRAFT
   OPEN
@@ -228,6 +234,14 @@ model CreatorProfile {
   city        String?
   language    String[] @default(["English"])
 
+  // Identity
+  username         String?  @unique
+  contactEmail     String?
+  contactPhone     String?
+
+  // Availability
+  availability     AvailabilityStatus @default(AVAILABLE)
+
   // Social accounts
   instagramHandle  String?
   instagramFollowers Int?
@@ -274,35 +288,46 @@ model CreatorProfile {
 // =============================================================
 
 model BrandProfile {
-  id          String  @id @default(cuid())
-  userId      String  @unique
-  companyName String?
-  logo        String? // URL
-  coverImage  String? // URL
-  bio         String? @db.Text
-  industry    String?
-  websiteUrl  String?
-  country     String?
-  city        String?
+  id           String  @id @default(cuid())
+  userId       String  @unique
+  slug         String? @unique  // public URL identifier e.g. "nike"
+  companyName  String?
+  tagline      String?           // short one-liner shown under name
+  logo         String?           // URL
+  coverImage   String?           // URL
+  bio          String? @db.Text
+  industry     String?
+  companySize  String?           // "1-10" | "11-50" | "51-200" | "201-1000" | "1000+"
+  foundedYear  Int?
+  websiteUrl   String?
+  contactEmail String?
+  contactPhone String?
+  country      String?
+  city         String?
 
   // Social
   instagramHandle String?
   linkedinUrl     String?
   twitterHandle   String?
+  youtubeHandle   String?
+  tiktokHandle    String?
+  facebookUrl     String?
 
   // Trust signals
-  isVerified      Boolean  @default(false)
-  verifiedAt      DateTime?
+  isVerified  Boolean   @default(false)
+  verifiedAt  DateTime?
 
   // Aggregated stats
   avgRating       Float?
-  reviewCount     Int      @default(0)
-  campaignCount   Int      @default(0)
-  totalSpentCents Int      @default(0)
+  reviewCount     Int    @default(0)
+  campaignCount   Int    @default(0)
+  totalSpentCents Int    @default(0)
 
-  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  campaigns     Campaign[]
-  savedCreators SavedCreator[]
+  user             User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaigns        Campaign[]
+  savedCreators    SavedCreator[]
+  products         BrandProduct[]
+  campaignShowcase BrandCampaignShowcase[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -773,4 +798,53 @@ model AdminActionLog {
   @@index([action])
   @@index([createdAt])
   @@map("admin_action_logs")
+}
+
+// =============================================================
+// BRAND PRODUCT SHOWCASE — products the brand sells/promotes
+// =============================================================
+
+model BrandProduct {
+  id             String  @id @default(cuid())
+  brandProfileId String
+  name           String
+  description    String? @db.Text
+  imageUrl       String?
+  productUrl     String?
+  sortOrder      Int     @default(0)
+  isPublic       Boolean @default(true)
+
+  brandProfile BrandProfile @relation(fields: [brandProfileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([brandProfileId])
+  @@map("brand_products")
+}
+
+// =============================================================
+// BRAND CAMPAIGN SHOWCASE — past campaigns the brand wants to highlight
+// =============================================================
+
+model BrandCampaignShowcase {
+  id             String  @id @default(cuid())
+  brandProfileId String
+  title          String
+  description    String? @db.Text
+  imageUrl       String?
+  externalUrl    String?
+  platform       String? // e.g. "Instagram", "YouTube"
+  resultSummary  String? // e.g. "2M impressions, 12% engagement"
+  year           Int?
+  sortOrder      Int     @default(0)
+  isPublic       Boolean @default(true)
+
+  brandProfile BrandProfile @relation(fields: [brandProfileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([brandProfileId])
+  @@map("brand_campaign_showcases")
 }
