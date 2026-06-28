@@ -1,17 +1,42 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { AuthCard } from "@/components/shared/auth-card";
 import { LoginForm } from "@/components/forms/login-form";
+import { LockKeyhole } from "lucide-react";
+import type { Metadata } from "next";
 
-export default function LoginPage() {
+export const metadata: Metadata = {
+  title: "Sign In – Content Creators Hub",
+};
+
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ registered?: string }>;
+}) {
   return (
-    <AuthCard title="Welcome back" description="Sign in to your account">
-      <LoginForm />
-      <p className="mt-4 text-center text-sm text-muted-foreground">
+    <AuthCard
+      title="Welcome back"
+      description="Sign in to your account to continue."
+      icon={
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow">
+          <LockKeyhole className="h-5 w-5" />
+        </div>
+      }
+    >
+      <Suspense>
+        <LoginForm />
+      </Suspense>
+
+      <div className="mt-6 text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-medium text-primary underline-offset-4 hover:underline">
-          Sign up
+        <Link
+          href="/signup"
+          className="font-medium text-foreground underline-offset-4 hover:underline"
+        >
+          Sign up free
         </Link>
-      </p>
+      </div>
     </AuthCard>
   );
 }

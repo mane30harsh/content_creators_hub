@@ -167,6 +167,10 @@ model User {
   isActive      Boolean   @default(true)  // soft ban toggle
   isFeatured    Boolean   @default(false) // admin can feature creators/brands
 
+  // Email / password reset tokens (relations to new models below)
+  passwordResetTokens    PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -847,4 +851,38 @@ model BrandCampaignShowcase {
 
   @@index([brandProfileId])
   @@map("brand_campaign_showcases")
+}
+
+// ─── Password Reset Token ────────────────────────────────────────────────────
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique @default(cuid())
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@map("password_reset_tokens")
+}
+
+// ─── Email Verification Token ─────────────────────────────────────────────────
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique @default(cuid())
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@map("email_verification_tokens")
 }

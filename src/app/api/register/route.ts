@@ -1,43 +1,21 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-
-import { prisma } from "@/lib/prisma";
-import { registerSchema } from "@/lib/validations/auth";
+import { registerUser } from "@/lib/actions/auth";
+import type { RegisterInput } from "@/lib/validations/auth";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
-  const parsed = registerSchema.safeParse(body);
+  if (!body) {
+    return NextResponse.json({ message: "Invalid request body." }, { status: 400 });
+  }
 
-  if (!parsed.success) {
+  const result = await registerUser(body as RegisterInput);
+
+  if (!result.success) {
     return NextResponse.json(
-      { message: "Invalid input.", errors: parsed.error.flatten() },
-      { status: 400 }
+      { message: result.error, fieldErrors: result.fieldErrors },
+      { status: result.error.includes("already exists") ? 409 : 400 }
     );
   }
 
-  const { name, email, password, role } = parsed.data;
-
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) {
-    return NextResponse.json(
-      { message: "An account with this email already exists." },
-      { status: 409 }
-    );
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password: hashedPassword,
-      role,
-      ...(role === "CREATOR" && { creatorProfile: { create: {} } }),
-      ...(role === "BRAND" && { brandProfile: { create: {} } }),
-    },
-    select: { id: true, email: true, role: true },
-  });
-
-  return NextResponse.json({ user }, { status: 201 });
+  return NextResponse.json({ message: "Account created." }, { status: 201 });
 }
