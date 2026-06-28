@@ -1,29 +1,30 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
-export function AuthCard({
-  title,
-  description,
-  children,
-}: {
+interface AuthCardProps {
   title: string;
-  description: string;
+  description?: string;
   children: React.ReactNode;
-}) {
+  className?: string;
+  /** Shown above the title — icon or logo area */
+  icon?: React.ReactNode;
+}
+
+export function AuthCard({ title, description, children, className, icon }: AuthCardProps) {
   return (
-    <main className="flex min-h-screen items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
-        </CardHeader>
-        <CardContent>{children}</CardContent>
-      </Card>
-    </main>
+    <div
+      className={cn(
+        "w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-sm",
+        className
+      )}
+    >
+      {icon && <div className="mb-6 flex justify-center">{icon}</div>}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+        {description && (
+          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+        )}
+      </div>
+      {children}
+    </div>
   );
 }

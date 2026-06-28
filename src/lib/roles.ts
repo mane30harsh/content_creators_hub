@@ -8,15 +8,20 @@ export type AppRole = (typeof ROLES)[number];
 
 export const ROLE_LABELS: Record<AppRole, string> = {
   CREATOR: "Creator",
-  BRAND: "Brand",
-  ADMIN: "Admin",
+  BRAND:   "Brand",
+  ADMIN:   "Admin",
+};
+
+export const ROLE_DESCRIPTIONS: Record<Exclude<AppRole, "ADMIN">, string> = {
+  CREATOR: "I create content and want to collaborate with brands.",
+  BRAND:   "I represent a brand and want to find creators.",
 };
 
 /** Default landing route after login, per role. */
 export const ROLE_HOME: Record<AppRole, string> = {
-  CREATOR: "/creator",
-  BRAND: "/brand",
-  ADMIN: "/admin",
+  CREATOR: "/creator/dashboard",
+  BRAND:   "/brand/dashboard",
+  ADMIN:   "/admin/dashboard",
 };
 
 export function isAppRole(value: unknown): value is AppRole {
