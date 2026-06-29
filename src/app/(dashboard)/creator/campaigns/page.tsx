@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { ApplicationStatusBadge } from "@/components/campaigns/application-status-badge";
 import { DeliverableBadge } from "@/components/campaigns/deliverable-badge";
+import { MessageUserButton } from "@/components/messages/message-user-button";
 
 function fmtDate(d?: Date | string | null) {
   if (!d) return null;
@@ -112,6 +113,11 @@ export default async function CreatorCampaignsPage() {
                             ${(app.proposedRateCents / 100).toLocaleString()}
                           </p>
                         )}
+                        <MessageUserButton
+                          userId={app.campaign.brandProfile.userId}
+                          size="sm"
+                          variant="ghost"
+                        />
                       </div>
                     </div>
 

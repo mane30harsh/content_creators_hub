@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { AvailabilityBadge } from "@/components/creator/availability-badge";
 import { SocialLinks } from "@/components/creator/social-links";
 import { PortfolioGrid } from "@/components/creator/portfolio-grid";
@@ -7,6 +8,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, Mail, Calendar } from "lucide-react";
+import { MessageUserButton } from "@/components/messages/message-user-button";
+import { ReviewCard } from "@/components/reviews/review-card";
+import { getSubjectReviews } from "@/lib/actions/review";
 import type { Metadata } from "next";
 
 interface Props {
@@ -44,9 +48,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CreatorPublicProfilePage({ params }: Props) {
   const { username } = await params;
-  const creator = await getCreator(username);
+  const [creator, session] = await Promise.all([
+    getCreator(username),
+    auth(),
+  ]);
 
   if (!creator) notFound();
+
+  const reviews = await getSubjectReviews(creator.userId);
 
   const initials = (creator.displayName ?? creator.username ?? "?")
     .split(" ")
@@ -130,6 +139,12 @@ export default async function CreatorPublicProfilePage({ params }: Props) {
                 </a>
               )}
             </div>
+
+            {session?.user && session.user.role === "BRAND" && (
+              <div className="mt-3">
+                <MessageUserButton userId={creator.userId} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -187,6 +202,20 @@ export default async function CreatorPublicProfilePage({ params }: Props) {
                 websiteUrl={creator.websiteUrl}
               />
             </section>
+
+            {/* Reviews */}
+            {reviews.length > 0 && (
+              <section>
+                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                  Reviews ({reviews.length})
+                </h2>
+                <div className="space-y-3">
+                  {reviews.map((review) => (
+                    <ReviewCard key={review.id} review={review} />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* Right — stats sidebar */}

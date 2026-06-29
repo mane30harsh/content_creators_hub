@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { VerifiedBadge } from "@/components/brand/verified-badge";
 import { BrandSocialLinks } from "@/components/brand/brand-social-links";
 import { Separator } from "@/components/ui/separator";
@@ -7,6 +8,9 @@ import {
   MapPin, Globe, Mail, Calendar, Users,
   Package, BarChart2, ExternalLink, Building2,
 } from "lucide-react";
+import { MessageUserButton } from "@/components/messages/message-user-button";
+import { ReviewCard } from "@/components/reviews/review-card";
+import { getSubjectReviews } from "@/lib/actions/review";
 import type { Metadata } from "next";
 
 interface Props {
@@ -36,8 +40,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BrandPublicProfilePage({ params }: Props) {
   const { slug } = await params;
-  const brand = await getBrand(slug);
+  const [brand, session] = await Promise.all([
+    getBrand(slug),
+    auth(),
+  ]);
   if (!brand) notFound();
+
+  const reviews = await getSubjectReviews(brand.userId);
 
   const initials = (brand.companyName ?? slug)
     .split(" ")
@@ -146,6 +155,9 @@ export default async function BrandPublicProfilePage({ params }: Props) {
               <Mail className="h-3.5 w-3.5" />
               Contact for Partnerships
             </a>
+          )}
+          {session?.user && session.user.role === "CREATOR" && (
+            <MessageUserButton userId={brand.userId} />
           )}
         </div>
 
@@ -293,6 +305,20 @@ export default async function BrandPublicProfilePage({ params }: Props) {
                         </div>
                       </div>
                     </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Reviews */}
+            {reviews.length > 0 && (
+              <section>
+                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                  Reviews ({reviews.length})
+                </h2>
+                <div className="space-y-3">
+                  {reviews.map((review) => (
+                    <ReviewCard key={review.id} review={review} />
                   ))}
                 </div>
               </section>
