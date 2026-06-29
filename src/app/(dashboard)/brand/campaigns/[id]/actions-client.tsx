@@ -6,6 +6,7 @@ import { reviewApplication, publishCampaign, closeCampaign } from "@/lib/actions
 import { ApplicationStatusBadge } from "@/components/campaigns/application-status-badge";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { MessageUserButton } from "@/components/messages/message-user-button";
 
 interface Application {
   id: string;
@@ -13,6 +14,7 @@ interface Application {
   pitch: string | null;
   proposedRateCents: number | null;
   createdAt: Date;
+  user: { id: string };
   creatorProfile: {
     displayName: string | null;
     username: string | null;
@@ -74,6 +76,7 @@ export function ApplicationRow({ app }: { app: Application }) {
           {app.proposedRateCents && (
             <Badge variant="outline">${(app.proposedRateCents / 100).toLocaleString()}</Badge>
           )}
+          <MessageUserButton userId={app.user.id} size="sm" variant="ghost" label="" />
         </div>
       </div>
 

@@ -424,6 +424,7 @@ model Campaign {
   brandProfile   BrandProfile          @relation(fields: [brandProfileId], references: [id], onDelete: Cascade)
   applications   CampaignApplication[]
   savedBy        SavedCampaign[]
+  reviews        Review[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -543,14 +544,16 @@ model Follow {
 // =============================================================
 
 model Review {
-  id        String @id @default(cuid())
-  authorId  String // who wrote the review
-  subjectId String // who the review is about
-  campaignId String? // optional: tie to a specific campaign
+  id         String @id @default(cuid())
+  authorId   String // who wrote the review
+  subjectId  String // who the review is about
+  campaignId String // tie to the completed campaign
+  authorRole Role   // CREATOR or BRAND — who wrote it
 
-  rating    Int    // 1–5
-  title     String?
-  body      String? @db.Text
+  rating    Int    // overall 1–5
+  body      String @db.Text // review text (required)
+  categories Json?  // category ratings stored as JSON
+
   isPublic  Boolean @default(true)
 
   // Moderation
@@ -558,12 +561,14 @@ model Review {
   removedReason String?
   removedAt     DateTime?
 
-  author  User @relation("ReviewAuthor",  fields: [authorId],  references: [id], onDelete: Cascade)
-  subject User @relation("ReviewSubject", fields: [subjectId], references: [id], onDelete: Cascade)
+  author     User      @relation("ReviewAuthor",  fields: [authorId],  references: [id], onDelete: Cascade)
+  subject    User      @relation("ReviewSubject", fields: [subjectId], references: [id], onDelete: Cascade)
+  campaign   Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([authorId, campaignId]) // one review per person per campaign
   @@index([subjectId, isPublic])
   @@index([authorId])
   @@index([campaignId])

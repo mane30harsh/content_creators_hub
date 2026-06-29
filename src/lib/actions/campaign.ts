@@ -311,6 +311,7 @@ export async function getBrandCampaignDetail(campaignId: string) {
               reviewCount:        true,
             },
           },
+          user: { select: { id: true } },
         },
         orderBy: { createdAt: "desc" },
       },
@@ -386,6 +387,7 @@ export async function getPublicCampaignDetail(campaignId: string) {
           industry:    true,
           isVerified:  true,
           websiteUrl:  true,
+          userId:      true,
         },
       },
       _count: { select: { applications: true } },
@@ -510,7 +512,7 @@ export async function getMyApplications() {
       campaign: {
         include: {
           brandProfile: {
-            select: { companyName: true, logo: true, slug: true },
+            select: { companyName: true, logo: true, slug: true, userId: true },
           },
         },
       },

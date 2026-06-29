@@ -30,13 +30,17 @@ export default async function DashboardLayout({
           { href: "/brand/dashboard",       label: "Dashboard" },
           { href: "/brand/campaigns",       label: "Campaigns" },
           { href: "/brand/campaigns/new",   label: "Post Campaign" },
+          { href: "/messages",              label: "Messages" },
+          { href: "/reviews",               label: "Reviews" },
           { href: "/brand/profile/edit",    label: "Profile" },
         ]
       : [
-          { href: "/creator/dashboard",  label: "Dashboard" },
-          { href: "/campaigns",          label: "Browse" },
-          { href: "/creator/campaigns",  label: "My Applications" },
-          { href: "/creator/profile/edit", label: "Profile" },
+          { href: "/creator/dashboard",     label: "Dashboard" },
+          { href: "/campaigns",             label: "Browse" },
+          { href: "/creator/campaigns",     label: "My Applications" },
+          { href: "/messages",              label: "Messages" },
+          { href: "/reviews",               label: "Reviews" },
+          { href: "/creator/profile/edit",  label: "Profile" },
         ];
 
   return (

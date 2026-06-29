@@ -14,6 +14,8 @@ import { Separator } from "@/components/ui/separator";
 import { DeliverableBadge } from "@/components/campaigns/deliverable-badge";
 import { ApplyForm } from "@/components/campaigns/apply-form";
 import { ApplicationStatusBadge } from "@/components/campaigns/application-status-badge";
+import { MessageUserButton } from "@/components/messages/message-user-button";
+import { checkReviewEligibility } from "@/lib/actions/review";
 
 function fmtBudget(min?: number | null, max?: number | null) {
   const fmt = (n: number) => `$${(n / 100).toLocaleString()}`;
@@ -76,6 +78,13 @@ export default async function CampaignDetailPage({ params }: Props) {
         select: { status: true, createdAt: true },
       });
     }
+  }
+
+  // Check review eligibility
+  let canReview = false;
+  if (session?.user?.id && campaign.status === "COMPLETED") {
+    const eligibility = await checkReviewEligibility(id);
+    canReview = eligibility.eligible;
   }
 
   const deadline = campaign.applicationDeadline ? new Date(campaign.applicationDeadline) : null;
@@ -346,6 +355,22 @@ export default async function CampaignDetailPage({ params }: Props) {
               )}
             </CardContent>
           </Card>
+
+          {/* Message brand */}
+          {campaign.brandProfile?.userId && isCreator && (
+            <MessageUserButton
+              userId={campaign.brandProfile.userId}
+              label="Message Brand"
+              className="w-full"
+            />
+          )}
+
+          {/* Write review */}
+          {canReview && (
+            <Button asChild className="w-full">
+              <Link href={`/reviews/new/${id}`}>Write a Review</Link>
+            </Button>
+          )}
         </div>
       </div>
     </main>
