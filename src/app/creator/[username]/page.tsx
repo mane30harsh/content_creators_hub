@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { AvailabilityBadge } from "@/components/creator/availability-badge";
 import { SocialLinks } from "@/components/creator/social-links";
+import { PortfolioGrid } from "@/components/creator/portfolio-grid";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -22,6 +23,10 @@ async function getCreator(username: string) {
           isFeatured: true,
           createdAt: true,
         },
+      },
+      portfolioItems: {
+        where: { isPublic: true },
+        orderBy: { sortOrder: "asc" },
       },
     },
   });
@@ -156,6 +161,12 @@ export default async function CreatorPublicProfilePage({ params }: Props) {
                     </span>
                   ))}
                 </div>
+              </section>
+            )}
+
+            {creator.portfolioItems.length > 0 && (
+              <section>
+                <PortfolioGrid items={creator.portfolioItems} />
               </section>
             )}
 

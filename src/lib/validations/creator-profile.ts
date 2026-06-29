@@ -137,3 +137,45 @@ export const onboardingSchema = creatorProfileSchema.pick({
 });
 
 export type OnboardingInput = z.infer<typeof onboardingSchema>;
+
+// ─── Portfolio ──────────────────────────────────────────────────────
+
+export const MEDIA_TYPE_OPTIONS = [
+  { value: "IMAGE", label: "Image" },
+  { value: "REEL", label: "Reel" },
+  { value: "VIDEO", label: "Video" },
+  { value: "SCREENSHOT", label: "Screenshot" },
+] as const;
+
+const metricsNumber = z
+  .union([z.number().int().nonnegative(), z.literal("")])
+  .optional()
+  .transform((v) => (v === "" || v === undefined ? undefined : Number(v)));
+
+const metricsFloat = z
+  .union([z.number().nonnegative(), z.literal("")])
+  .optional()
+  .transform((v) => (v === "" || v === undefined ? undefined : Number(v)));
+
+export const portfolioItemSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1, "Title is required").max(120),
+  brandName: z.string().max(120).optional().or(z.literal("")),
+  description: z.string().max(2000).optional().or(z.literal("")),
+  mediaUrl: z.string().min(1, "Media URL is required"),
+  externalUrl: z
+    .string()
+    .optional()
+    .or(z.literal(""))
+    .refine((v) => !v || /^https?:\/\//.test(v), {
+      message: "Must be a valid URL starting with http:// or https://",
+    }),
+  mediaType: z.enum(["IMAGE", "REEL", "VIDEO", "SCREENSHOT"]),
+  views: metricsNumber,
+  likes: metricsNumber,
+  comments: metricsNumber,
+  shares: metricsNumber,
+  engagementRate: metricsFloat,
+});
+
+export type PortfolioItemInput = z.infer<typeof portfolioItemSchema>;

@@ -103,6 +103,8 @@ enum MediaType {
   VIDEO
   DOCUMENT
   LINK
+  REEL
+  SCREENSHOT
 }
 
 // =============================================================
@@ -349,13 +351,20 @@ model BrandProfile {
 model PortfolioItem {
   id              String  @id @default(cuid())
   creatorProfileId String
-  title           String
+  title           String    // campaign / project title
+  brandName       String?   // brand this work was done for
   description     String? @db.Text
   mediaType       MediaType
-  mediaUrl        String  // URL to image/video/doc
-  externalUrl     String? // original post URL
-  thumbnailUrl    String?
-  tags            String[]
+  mediaUrl        String    // URL to image / video / reel / screenshot
+  externalUrl     String?   // original post URL
+
+  // Performance metrics (optional)
+  views           Int?
+  likes           Int?
+  comments        Int?
+  shares          Int?
+  engagementRate  Float?
+
   sortOrder       Int     @default(0)
   isPublic        Boolean @default(true)
 

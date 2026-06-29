@@ -16,6 +16,11 @@ export default async function ProfileEditPage() {
     redirect("/creator/onboarding");
   }
 
+  const portfolioItems = await prisma.portfolioItem.findMany({
+    where: { creatorProfileId: profile.id },
+    orderBy: { sortOrder: "asc" },
+  });
+
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
       <div className="mb-8 flex items-center justify-between">
@@ -33,7 +38,7 @@ export default async function ProfileEditPage() {
           View public profile →
         </a>
       </div>
-      <ProfileEditForm profile={profile} />
+      <ProfileEditForm profile={profile} portfolioItems={portfolioItems} />
     </main>
   );
 }

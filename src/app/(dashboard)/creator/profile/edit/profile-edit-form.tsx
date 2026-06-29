@@ -74,12 +74,30 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { NicheSelector } from "@/components/creator/niche-selector";
 import { LanguageSelector } from "@/components/creator/language-selector";
+import { PortfolioPanel } from "@/components/creator/portfolio-panel";
+
+interface ProfileItem {
+  id: string;
+  title: string;
+  brandName: string | null;
+  description: string | null;
+  mediaUrl: string;
+  externalUrl: string | null;
+  mediaType: string;
+  views: number | null;
+  likes: number | null;
+  comments: number | null;
+  shares: number | null;
+  engagementRate: number | null;
+  sortOrder: number;
+}
 
 interface ProfileEditFormProps {
   profile: CreatorProfile;
+  portfolioItems: ProfileItem[];
 }
 
-export function ProfileEditForm({ profile }: ProfileEditFormProps) {
+export function ProfileEditForm({ profile, portfolioItems }: ProfileEditFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -132,11 +150,12 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Tabs defaultValue="basics" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="basics">Basics</TabsTrigger>
             <TabsTrigger value="niches">Niches</TabsTrigger>
             <TabsTrigger value="social">Social</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
+            <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
           </TabsList>
 
           {/* ── BASICS ───────────────────────────────────── */}
@@ -628,6 +647,15 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
                     </FormItem>
                   )}
                 />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* ── PORTFOLIO ────────────────────────────────── */}
+          <TabsContent value="portfolio">
+            <Card>
+              <CardContent className="p-6">
+                <PortfolioPanel items={portfolioItems} />
               </CardContent>
             </Card>
           </TabsContent>

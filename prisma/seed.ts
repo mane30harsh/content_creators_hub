@@ -58,7 +58,6 @@ async function main() {
                 mediaType: MediaType.IMAGE,
                 mediaUrl: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800",
                 externalUrl: "https://instagram.com/p/example1",
-                tags: ["fashion", "summer", "zara"],
                 sortOrder: 1,
               },
               {
@@ -66,8 +65,6 @@ async function main() {
                 description: "7-day travel vlog for a boutique travel agency.",
                 mediaType: MediaType.VIDEO,
                 mediaUrl: "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
-                thumbnailUrl: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800",
-                tags: ["travel", "bali", "vlog"],
                 sortOrder: 2,
               },
             ],
