@@ -42,7 +42,6 @@ interface ShowcaseItem {
 }
 
 interface CampaignShowcasePanelProps {
-  profileId: string;
   items: ShowcaseItem[];
 }
 
@@ -342,7 +341,7 @@ function ShowcaseCard({
   );
 }
 
-export function CampaignShowcasePanel({ profileId, items: initial }: CampaignShowcasePanelProps) {
+export function CampaignShowcasePanel({ items: initial }: CampaignShowcasePanelProps) {
   const [items] = useState(initial);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

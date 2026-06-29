@@ -9,11 +9,7 @@ export const metadata: Metadata = {
   title: "Sign In – Content Creators Hub",
 };
 
-export default function LoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ registered?: string }>;
-}) {
+export default function LoginPage() {
   return (
     <AuthCard
       title="Welcome back"

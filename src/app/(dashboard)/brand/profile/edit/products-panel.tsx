@@ -22,7 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 interface Product {
@@ -35,7 +34,6 @@ interface Product {
 }
 
 interface ProductsPanelProps {
-  profileId: string;
   products: Product[];
 }
 
@@ -165,11 +163,9 @@ function ProductForm({
 function ProductCard({
   product,
   onEdit,
-  onDelete,
 }: {
   product: Product;
   onEdit: () => void;
-  onDelete: () => void;
 }) {
   const [deleting, startDelete] = useTransition();
 
@@ -244,7 +240,7 @@ function ProductCard({
   );
 }
 
-export function ProductsPanel({ profileId, products: initial }: ProductsPanelProps) {
+export function ProductsPanel({ products: initial }: ProductsPanelProps) {
   const [products] = useState(initial);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -258,7 +254,7 @@ export function ProductsPanel({ profileId, products: initial }: ProductsPanelPro
             Product Showcase
           </CardTitle>
           <CardDescription>
-            Highlight your key products so creators understand what they'll be promoting.
+            Highlight your key products so creators understand what they&apos;ll be promoting.
           </CardDescription>
         </div>
         {!showForm && (
@@ -282,7 +278,7 @@ export function ProductsPanel({ profileId, products: initial }: ProductsPanelPro
             <Package className="mb-3 h-8 w-8 text-muted-foreground/50" />
             <p className="text-sm font-medium">No products yet</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Add your products so creators know what they're promoting.
+              Add your products so creators know what they&apos;re promoting.
             </p>
             <Button size="sm" className="mt-4" onClick={() => setShowForm(true)}>
               <Plus className="mr-1.5 h-3.5 w-3.5" />
@@ -311,7 +307,6 @@ export function ProductsPanel({ profileId, products: initial }: ProductsPanelPro
                   key={product.id}
                   product={product}
                   onEdit={() => { setShowForm(false); setEditingId(product.id); }}
-                  onDelete={() => window.location.reload()}
                 />
               )
             )}

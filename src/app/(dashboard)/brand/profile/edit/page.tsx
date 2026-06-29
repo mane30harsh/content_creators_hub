@@ -75,14 +75,12 @@ export default async function BrandProfileEditPage() {
 
         <TabsContent value="products">
           <ProductsPanel
-            profileId={profile.id}
             products={profile.products}
           />
         </TabsContent>
 
         <TabsContent value="campaigns">
           <CampaignShowcasePanel
-            profileId={profile.id}
             items={profile.campaignShowcase}
           />
         </TabsContent>

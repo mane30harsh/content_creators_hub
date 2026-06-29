@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 type Status = "AVAILABLE" | "LIMITED" | "FULLY_BOOKED";

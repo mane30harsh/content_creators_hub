@@ -1,13 +1,11 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { VerifiedBadge } from "@/components/brand/verified-badge";
 import { BrandSocialLinks } from "@/components/brand/brand-social-links";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import {
   MapPin, Globe, Mail, Calendar, Users,
-  Package, Megaphone, BarChart2, ExternalLink, Building2,
+  Package, BarChart2, ExternalLink, Building2,
 } from "lucide-react";
 import type { Metadata } from "next";
 

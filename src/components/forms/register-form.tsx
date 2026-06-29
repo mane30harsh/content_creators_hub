@@ -13,11 +13,11 @@ import {
 
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import { registerUser } from "@/lib/actions/auth";
-import { ROLE_HOME, ROLE_DESCRIPTIONS } from "@/lib/roles";
+import { ROLE_DESCRIPTIONS } from "@/lib/roles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription,
+  Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 

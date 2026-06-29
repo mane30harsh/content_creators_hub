@@ -592,7 +592,7 @@ export function ProfileEditForm({ profile }: ProfileEditFormProps) {
               <CardHeader>
                 <CardTitle>Contact Information</CardTitle>
                 <CardDescription>
-                  Visible to brands who view your profile. Only share what you're comfortable with.
+                  Visible to brands who view your profile. Only share what you&apos;re comfortable with.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">

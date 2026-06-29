@@ -364,7 +364,7 @@ export default async function BrandDashboardPage() {
             {profile.campaignShowcase.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-6 text-center">
                 <Megaphone className="mb-2 h-7 w-7 text-muted-foreground/50" />
-                <p className="text-sm text-muted-foreground">Show creators what you've run before.</p>
+                <p className="text-sm text-muted-foreground">Show creators what you&apos;ve run before.</p>
                 <Button variant="link" size="sm" asChild className="mt-1">
                   <Link href="/brand/profile/edit">Add campaigns →</Link>
                 </Button>

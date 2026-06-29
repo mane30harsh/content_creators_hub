@@ -90,7 +90,7 @@ export function SocialLinks(props: SocialLinksProps) {
 
   return (
     <div className="flex flex-wrap gap-3">
-      {platforms.map(({ key, icon: Icon, label, handle, followers, href, color }) => (
+      {platforms.map(({ key, icon: Icon, handle, followers, href, color }) => (
         <a
           key={key}
           href={href ?? "#"}

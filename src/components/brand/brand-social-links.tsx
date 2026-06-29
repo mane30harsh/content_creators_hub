@@ -62,8 +62,6 @@ const platformConfig = [
   },
 ] as const;
 
-type PlatformKey = (typeof platformConfig)[number]["key"];
-
 type ValueMap = {
   instagram?: string | null;
   twitter?: string | null;

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { isAppRole, ROLE_HOME, ROLE_LABELS } from "@/lib/roles";
+import { isAppRole, ROLE_HOME } from "@/lib/roles";
 import { UserNav } from "@/components/shared/user-nav";
 
 export default async function DashboardLayout({
@@ -21,28 +21,28 @@ export default async function DashboardLayout({
   const navLinks =
     role === "ADMIN"
       ? [
-          { href: "/admin/dashboard", label: "Overview" },
-          { href: "/admin/users", label: "Users" },
-          { href: "/admin/campaigns", label: "Campaigns" },
+          { href: "/admin/dashboard",  label: "Overview" },
+          { href: "/admin/users",      label: "Users" },
+          { href: "/admin/campaigns",  label: "Campaigns" },
         ]
       : role === "BRAND"
       ? [
-          { href: "/brand/dashboard", label: "Dashboard" },
-          { href: "/brand/profile/edit", label: "Profile" },
-          { href: "/brand/onboarding", label: "Campaigns" },
+          { href: "/brand/dashboard",       label: "Dashboard" },
+          { href: "/brand/campaigns",       label: "Campaigns" },
+          { href: "/brand/campaigns/new",   label: "Post Campaign" },
+          { href: "/brand/profile/edit",    label: "Profile" },
         ]
       : [
-          { href: "/creator/dashboard", label: "Dashboard" },
+          { href: "/creator/dashboard",  label: "Dashboard" },
+          { href: "/campaigns",          label: "Browse" },
+          { href: "/creator/campaigns",  label: "My Applications" },
           { href: "/creator/profile/edit", label: "Profile" },
-          { href: "/creator/onboarding", label: "Campaigns" },
         ];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Top nav */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-          {/* Logo + nav */}
           <div className="flex items-center gap-6">
             <Link
               href={roleHome}
@@ -67,7 +67,6 @@ export default async function DashboardLayout({
             </nav>
           </div>
 
-          {/* User menu */}
           <UserNav
             name={session.user.name ?? undefined}
             email={session.user.email ?? undefined}
@@ -77,7 +76,6 @@ export default async function DashboardLayout({
         </div>
       </header>
 
-      {/* Page content */}
       <div className="flex-1">{children}</div>
     </div>
   );

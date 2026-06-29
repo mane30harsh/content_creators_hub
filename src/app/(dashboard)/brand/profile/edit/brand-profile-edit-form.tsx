@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Building2, Globe, MapPin, Sparkles, Instagram, Twitter,
-  Youtube, Music2, Linkedin, Facebook, Mail, Phone, Image,
+  Youtube, Music2, Linkedin, Facebook, Mail, Phone, Image as ImageIcon,
   Users, Calendar,
 } from "lucide-react";
 
@@ -135,7 +135,7 @@ export function BrandProfileEditForm({ profile }: { profile: BrandProfileData })
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-1.5">
-                          <Image className="h-3.5 w-3.5 text-muted-foreground" />
+                          <ImageIcon className="h-3.5 w-3.5 text-muted-foreground" />
                           Logo URL
                         </FormLabel>
                         <FormControl>
@@ -152,7 +152,7 @@ export function BrandProfileEditForm({ profile }: { profile: BrandProfileData })
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-1.5">
-                          <Image className="h-3.5 w-3.5 text-muted-foreground" />
+                          <ImageIcon className="h-3.5 w-3.5 text-muted-foreground" />
                           Cover Banner URL
                         </FormLabel>
                         <FormControl>
@@ -413,7 +413,7 @@ export function BrandProfileEditForm({ profile }: { profile: BrandProfileData })
               <CardHeader>
                 <CardTitle>Social Media</CardTitle>
                 <CardDescription>
-                  Link your brand's social accounts so creators can find you everywhere.
+                  Link your brand&apos;s social accounts so creators can find you everywhere.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">

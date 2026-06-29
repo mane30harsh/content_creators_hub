@@ -1,7 +1,6 @@
 "use client";
 
 import { NICHES } from "@/lib/validations/creator-profile";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface NicheSelectorProps {

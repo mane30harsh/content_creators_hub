@@ -22,7 +22,7 @@ export default async function OnboardingPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Welcome to the Hub 👋</h1>
         <p className="mt-2 text-muted-foreground">
-          Let's get your creator profile set up in just a few steps.
+          Let&apos;s get your creator profile set up in just a few steps.
         </p>
       </div>
       <OnboardingForm />
