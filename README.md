@@ -1,127 +1,209 @@
 # Content Creators Hub
 
-Production-grade foundation for a platform connecting **Creators**, **Brands**,
-and **Admins**. This repo is intentionally scoped to a clean, scalable
-starting point — feature modules build on top of it.
+Production-grade platform connecting **Creators**, **Brands**, and **Admins**.
 
 ## Tech Stack
 
-- **Next.js 15** (App Router, TypeScript)
-- **Tailwind CSS** + **shadcn/ui**
-- **PostgreSQL** + **Prisma ORM**
-- **Auth.js (NextAuth v5)** — credentials provider, JWT sessions, role claims
-- **Zod** — schema validation
-- **React Hook Form** — form state, wired to Zod via `@hookform/resolvers`
+| Layer      | Technology |
+|------------|------------|
+| Framework  | Next.js 15 (App Router, TypeScript) |
+| Styling    | Tailwind CSS + shadcn/ui |
+| Database   | PostgreSQL + Prisma ORM |
+| Auth       | Auth.js (NextAuth v5) — credentials, JWT, role claims |
+| Validation | Zod + React Hook Form |
 
-## Folder Structure
+## Quick Start
+
+### Prerequisites
+
+- Node.js 22+
+- PostgreSQL 16+ (or Docker)
+- npm
+
+### Local (no Docker)
+
+```bash
+# 1. Install & configure
+npm run setup
+
+# 2. Edit .env with your database credentials
+#    DATABASE_URL="postgresql://postgres:postgres@localhost:5432/content_creators_hub"
+#    AUTH_SECRET — run: npx auth secret
+
+# 3. Migrate database
+npm run prisma:migrate
+
+# 4. Seed sample data (optional)
+npm run prisma:seed
+
+# 5. Start dev server
+npm run dev
+```
+
+Visit **http://localhost:3000**.
+
+### Docker (recommended)
+
+```bash
+# Start Postgres + app
+npm run docker:up
+
+# View logs
+npm run docker:logs
+
+# Stop
+npm run docker:down
+
+# Rebuild after changes
+npm run docker:build
+npm run docker:up
+```
+
+The app is at **http://localhost:3000**. The database is exposed on port **5432**.
+
+## Seeded Accounts
+
+All seeded accounts use password: **`password123`**
+
+| Role       | Email                  |
+|------------|------------------------|
+| Admin      | admin@example.com      |
+| Creator    | creator@example.com    |
+| Creator    | creator2@example.com   |
+| Creator    | creator3@example.com   |
+| Brand      | brand@example.com      |
+| Brand      | brand2@example.com     |
+
+Sample data includes campaigns, posts, comments, likes, reviews, and notifications.
+
+## Scripts
+
+### Development
+
+| Command                  | Description                        |
+|--------------------------|------------------------------------|
+| `npm run dev`            | Start dev server                   |
+| `npm run build`          | Production build                   |
+| `npm run start`          | Start production server            |
+| `npm run lint`           | Run ESLint                         |
+| `npm run typecheck`      | Run TypeScript type check          |
+| `npm run format`         | Format code with Prettier          |
+
+### Database
+
+| Command                       | Description                       |
+|-------------------------------|-----------------------------------|
+| `npm run prisma:generate`     | Regenerate Prisma client          |
+| `npm run prisma:migrate`      | Run pending migrations (dev)      |
+| `npm run prisma:migrate:deploy` | Run migrations in production    |
+| `npm run prisma:seed`         | Seed sample data                  |
+| `npm run prisma:reset`        | Drop all data & re-run migrations |
+| `npm run prisma:studio`       | Open Prisma Studio (GUI)          |
+| `npm run db:setup`            | Run migrations + seed (CI/prod)   |
+
+### Docker
+
+| Command                 | Description              |
+|-------------------------|--------------------------|
+| `npm run docker:build`  | Build Docker image       |
+| `npm run docker:up`     | Start containers         |
+| `npm run docker:down`   | Stop containers          |
+| `npm run docker:logs`   | Follow container logs    |
+
+### Production Build
+
+```bash
+npm run build && npm run start
+```
+
+Health check: **GET /api/health**
+
+## Project Structure
 
 ```
 src/
   app/
-    (auth)/login, (auth)/register      # public auth routes
-    (dashboard)/creator|brand|admin    # role-protected routes
-    api/auth/[...nextauth]             # Auth.js route handler
-    api/register                       # credentials sign-up endpoint
-    unauthorized/                      # 403-style landing page
-    layout.tsx, page.tsx, globals.css
+    (auth)/                 # Login, register, password reset
+    (dashboard)/            # Role-protected (creator|brand|admin)
+    api/
+      auth/[...nextauth]    # Auth.js handler
+      register/             # Credentials sign-up
+      health/               # Health check endpoint
+    feed/                   # Social feed
+    notifications/          # Notifications page
+    posts/[id]              # Post detail
+    reviews/                # Reviews
+    layout.tsx              # Root layout
+    page.tsx                # Landing page
+    loading.tsx             # Global loading state
+    error.tsx               # Global error boundary
+    not-found.tsx           # 404 page
   components/
-    ui/                                # shadcn primitives (button, input, form...)
-    forms/                             # feature forms (login, register)
-    shared/                            # cross-cutting components (auth card, providers)
+    ui/                     # shadcn primitives
+    forms/                  # Auth forms
+    shared/                 # UserNav, providers
+    feed/                   # PostCard, PostForm, CommentSection
+    notifications/          # NotificationDropdown
+    messages/               # MessageUserButton (placeholder)
   lib/
-    auth/                              # Auth.js config, guards, barrel export
-    validations/                       # Zod schemas
-    prisma.ts                          # Prisma client singleton
-    roles.ts                           # role constants shared by client & server
-    utils.ts                           # cn() helper
-  hooks/                               # client hooks (useCurrentUser)
-  types/                               # NextAuth module augmentation
-  middleware.ts                        # edge-level route protection by role
+    auth/                   # Auth.js config, guards
+    actions/                # Server actions
+    validations/            # Zod schemas
+    prisma.ts               # Prisma singleton
+    roles.ts                # Role constants
+    logger.ts               # Logging utility
+    rate-limit.ts           # In-memory rate limiter
+    upload.ts               # File validation utilities
+    notifications.ts        # Notification helper
+    utils.ts                # cn() helper
+  middleware.ts             # Edge auth + role protection
 prisma/
-  schema.prisma                        # User, Role enum, Creator/Brand profiles
-  seed.ts                              # seeds one user per role
+  schema.prisma             # Full data model
+  seed.ts                   # Sample data seeder
+  migrations/               # Database migrations
 ```
 
-## Role-Based Architecture
+## Architecture
 
-- `Role` enum in Prisma: `CREATOR`, `BRAND`, `ADMIN`.
-- Role is embedded in the JWT and session (`session.user.role`).
-- **Middleware** (`src/middleware.ts`) blocks `/creator`, `/brand`, `/admin`
-  prefixes at the edge based on role.
-- **Server-side guards** (`src/lib/auth/guards.ts`) — `requireUser()` /
-  `requireRole([...])` — for defense-in-depth inside Server Components and
-  Route Handlers.
-- Extend this by adding role-specific Prisma models (`CreatorProfile`,
-  `BrandProfile` already scaffolded) and gating UI with `useCurrentUser()` on
-  the client.
+- **Role-based routing**: Middleware blocks routes by role at the edge
+- **Server action guards**: `requireUser()` / `requireRole([...])` for defense-in-depth
+- **JWT sessions**: Role embedded in the token, accessible on client via `useCurrentUser()`
+- **Notifications**: Triggered via `prisma.notification.create()` in server actions
+- **Rate limiting**: In-memory sliding window for auth endpoints (replace with Redis for multi-instance)
 
-## Getting Started
+## Environment Variables
 
-### 1. Install dependencies
+| Variable              | Required | Description                    |
+|-----------------------|----------|--------------------------------|
+| `DATABASE_URL`        | Yes      | PostgreSQL connection string   |
+| `AUTH_SECRET`         | Yes      | NextAuth JWT secret            |
+| `NEXTAUTH_URL`        | Yes      | App base URL for callbacks     |
+| `GOOGLE_CLIENT_ID`    | No       | Google OAuth client ID         |
+| `GOOGLE_CLIENT_SECRET`| No       | Google OAuth client secret     |
+| `NEXT_PUBLIC_APP_URL` | Yes      | Public-facing app URL          |
+| `NEXT_PUBLIC_APP_NAME`| No       | App name (default: Content Creators Hub) |
 
-```bash
-npm install
-```
-
-### 2. Configure environment variables
-
-```bash
-cp .env.example .env
-```
-
-Fill in:
-- `DATABASE_URL` — your PostgreSQL connection string
-- `AUTH_SECRET` — generate with `npx auth secret`
-- `NEXTAUTH_URL` — `http://localhost:3000` for local dev
-
-### 3. Set up the database
-
-```bash
-npm run prisma:migrate    # creates tables from schema.prisma
-npm run prisma:seed       # optional: seeds creator/brand/admin test users
-```
-
-Seeded accounts (password: `password123`):
-- `admin@example.com`
-- `creator@example.com`
-- `brand@example.com`
-
-### 4. Run the dev server
-
-```bash
-npm run dev
-```
-
-Visit `http://localhost:3000`.
-
-## Adding shadcn/ui Components
-
-The base primitives (`button`, `input`, `label`, `card`, `form`, `select`)
-are already in `src/components/ui`. To add more:
+## Adding Components (shadcn/ui)
 
 ```bash
 npx shadcn@latest add dialog dropdown-menu avatar toast
 ```
 
-## Scripts
+## Health Check
 
-| Command                  | Description                          |
-|---------------------------|---------------------------------------|
-| `npm run dev`              | Start dev server                     |
-| `npm run build`            | Production build                     |
-| `npm run start`            | Start production server              |
-| `npm run lint`              | Run ESLint                           |
-| `npm run prisma:generate`   | Regenerate Prisma client             |
-| `npm run prisma:migrate`    | Run migrations (dev)                 |
-| `npm run prisma:studio`     | Open Prisma Studio                   |
-| `npm run prisma:seed`       | Seed the database                    |
+```bash
+curl http://localhost:3000/api/health
 
-## Next Steps (Not Built Yet — By Design)
+# Response:
+# { "status": "ok", "database": "connected", "uptime": 123.45, ... }
+```
 
-This scaffold deliberately stops short of feature work. Natural next steps:
-- Campaign / collaboration domain models
+## Next Steps
+
+- Follow/Unfollow relationships
+- Direct messaging (real-time)
+- Creator search & discovery
+- Admin panel analytics
+- Email sending (verification, password reset, notifications)
+- OAuth providers (Google, GitHub)
 - File uploads (media, portfolios)
-- Messaging between creators and brands
-- Admin moderation tooling
-- Email verification & password reset flows
-- OAuth providers (Google, etc.) — provider slot already in `lib/auth/config.ts`
