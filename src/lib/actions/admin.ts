@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth/guards";
 
@@ -23,7 +24,7 @@ async function logAction(
       targetId,
       action: action as never,
       reason,
-      metadata: metadata ?? undefined,
+      metadata: (metadata ?? undefined) as Prisma.InputJsonValue,
       referenceId,
       referenceType,
     },

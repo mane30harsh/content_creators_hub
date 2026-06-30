@@ -1,7 +1,9 @@
 "use server";
 
 import bcrypt from "bcryptjs";
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 import {
   registerSchema,
   forgotPasswordSchema,
@@ -20,6 +22,13 @@ type ActionResult<T = void> =
 export async function registerUser(
   rawData: RegisterInput
 ): Promise<ActionResult<{ email: string }>> {
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for") ?? headersList.get("x-real-ip") ?? "unknown";
+  const rl = checkRateLimit(`register:${ip}`, { windowMs: 60_000, max: 5 });
+  if (!rl.allowed) {
+    return { success: false, error: "Too many registration attempts. Please try again later." };
+  }
+
   const parsed = registerSchema.safeParse(rawData);
   if (!parsed.success) {
     return {
@@ -66,6 +75,13 @@ export async function registerUser(
 export async function requestPasswordReset(
   rawData: ForgotPasswordInput
 ): Promise<ActionResult<{ sent: boolean }>> {
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for") ?? headersList.get("x-real-ip") ?? "unknown";
+  const rl = checkRateLimit(`forgot-password:${ip}`, { windowMs: 60_000, max: 3 });
+  if (!rl.allowed) {
+    return { success: false, error: "Too many requests. Please try again later." };
+  }
+
   const parsed = forgotPasswordSchema.safeParse(rawData);
   if (!parsed.success) {
     return {
@@ -109,6 +125,13 @@ export async function requestPasswordReset(
 export async function resetPassword(
   rawData: ResetPasswordInput
 ): Promise<ActionResult<void>> {
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for") ?? headersList.get("x-real-ip") ?? "unknown";
+  const rl = checkRateLimit(`reset-password:${ip}`, { windowMs: 60_000, max: 5 });
+  if (!rl.allowed) {
+    return { success: false, error: "Too many requests. Please try again later." };
+  }
+
   const parsed = resetPasswordSchema.safeParse(rawData);
   if (!parsed.success) {
     return {
