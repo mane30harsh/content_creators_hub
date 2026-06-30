@@ -107,8 +107,8 @@ export async function createReview(rawData: ReviewInput): Promise<ActionResult<{
   await updateAggregatedRatings(subjectId);
 
   revalidatePath(`/campaigns/${campaignId}`);
-  revalidatePath(`/creator/${eligibility.authorRole === "BRAND" ? "..." : "..."}`);
-  revalidatePath(`/brand/${eligibility.authorRole === "CREATOR" ? "..." : "..."}`);
+  revalidatePath(`/creator`);
+  revalidatePath(`/brand`);
 
   return { success: true, data: { id: review.id } };
 }
@@ -168,8 +168,13 @@ export async function getSubjectReviews(subjectId: string) {
   });
 
   return reviews.map((r) => ({
-    ...r,
+    id: r.id,
+    rating: r.rating,
+    body: r.body,
     categories: r.categories as Record<string, number> | null,
+    createdAt: r.createdAt,
+    author: r.author,
+    campaign: r.campaign,
   }));
 }
 

@@ -18,7 +18,7 @@ interface ReviewProps {
   review: {
     id: string;
     rating: number;
-    body: string;
+    body: string | null;
     categories: Record<string, number> | null;
     createdAt: Date;
     author: Author;
@@ -61,7 +61,9 @@ export function ReviewCard({ review }: ReviewProps) {
         <StarRating rating={review.rating} size="sm" />
       </div>
 
-      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{review.body}</p>
+      {review.body && (
+        <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{review.body}</p>
+      )}
 
       {review.categories && Object.keys(review.categories).length > 0 && (
         <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-3">

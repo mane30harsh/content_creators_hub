@@ -57,7 +57,7 @@ export function ReviewForm({ campaignId, subjectId, authorRole, subjectName }: P
       if (!result.success) {
         setError(result.error);
       } else {
-        router.push(`/messages`);
+        router.push(`/reviews`);
       }
     });
   }
