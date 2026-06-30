@@ -431,6 +431,11 @@ model Campaign {
   tags           String[]
   coverImage     String?
 
+  // Moderation
+  isRemoved     Boolean   @default(false)
+  removedReason String?
+  removedAt     DateTime?
+
   brandProfile   BrandProfile          @relation(fields: [brandProfileId], references: [id], onDelete: Cascade)
   applications   CampaignApplication[]
   savedBy        SavedCampaign[]
@@ -446,6 +451,7 @@ model Campaign {
   @@index([isPublic, status])
   @@index([isFeatured])
   @@index([applicationDeadline])
+  @@index([isRemoved])
   @@map("campaigns")
 }
 

@@ -26,6 +26,8 @@ export default async function DashboardLayout({
           { href: "/admin/dashboard",  label: "Overview" },
           { href: "/admin/users",      label: "Users" },
           { href: "/admin/campaigns",  label: "Campaigns" },
+          { href: "/admin/reports",    label: "Reports" },
+          { href: "/admin/analytics",  label: "Analytics" },
         ]
       : role === "BRAND"
       ? [
