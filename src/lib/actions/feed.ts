@@ -216,7 +216,7 @@ export async function toggleSave(
 // ─── Increment share count ──────────────────────────────────────
 
 export async function sharePost(postId: string): Promise<ActionResult<{ shareCount: number }>> {
-  const user = await requireUser();
+  await requireUser();
   const post = await prisma.post.update({
     where: { id: postId },
     data: { shareCount: { increment: 1 } },

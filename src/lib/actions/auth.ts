@@ -93,29 +93,27 @@ export async function requestPasswordReset(
 
   const { email } = parsed.data;
 
-  // Always return success to prevent email enumeration
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return { success: true, data: { sent: false } };
+  if (user) {
+    // Invalidate any existing tokens for this user
+    await prisma.passwordResetToken.updateMany({
+      where: { userId: user.id, usedAt: null },
+      data: { usedAt: new Date() },
+    });
 
-  // Invalidate any existing tokens for this user
-  await prisma.passwordResetToken.updateMany({
-    where: { userId: user.id, usedAt: null },
-    data: { usedAt: new Date() },
-  });
+    // Create a new token valid for 1 hour
+    await prisma.passwordResetToken.create({
+      data: {
+        userId: user.id,
+        expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      },
+    });
 
-  // Create a new token valid for 1 hour
-  const token = await prisma.passwordResetToken.create({
-    data: {
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
-    },
-  });
-
-  // TODO: Send password reset email
-  // const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token.token}`;
-  // await sendPasswordResetEmail(email, resetUrl);
-
-  console.info(`[auth] Password reset token for ${email}: ${token.token}`);
+    // TODO: Send password reset email
+    // const token = await prisma.passwordResetToken.findFirst({ where: { userId: user.id, usedAt: null }, orderBy: { createdAt: "desc" } });
+    // const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token?.token}`;
+    // await sendPasswordResetEmail(email, resetUrl);
+  }
 
   return { success: true, data: { sent: true } };
 }

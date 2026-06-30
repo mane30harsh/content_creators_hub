@@ -15,7 +15,10 @@ const store = new Map<string, Entry>();
 
 const CLEANUP_INTERVAL = 60_000; // 1 min
 
-if (typeof globalThis !== "undefined") {
+// Avoid accumulating intervals on HMR
+const g = globalThis as { __rateLimitCleanupRegistered?: boolean };
+if (typeof globalThis !== "undefined" && !g.__rateLimitCleanupRegistered) {
+  g.__rateLimitCleanupRegistered = true;
   setInterval(() => {
     const now = Date.now();
     for (const [key, entry] of store) {

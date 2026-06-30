@@ -3,7 +3,7 @@ import { getAnalytics } from "@/lib/actions/admin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Users, Briefcase, Building2, FileText,
-  AlertTriangle, MessageSquare, Star, TrendingUp,
+  AlertTriangle, MessageSquare, Star, TrendingUp, Camera,
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -14,11 +14,19 @@ export const metadata: Metadata = {
 
 export default async function AdminDashboardPage() {
   await requireRole(["ADMIN"]);
-  const analytics = await getAnalytics();
+  const analytics = await getAnalytics().catch(() => null);
+  if (!analytics) {
+    return (
+      <main className="mx-auto max-w-6xl px-4 py-10">
+        <h1 className="text-2xl font-bold tracking-tight">Admin Dashboard</h1>
+        <p className="mt-1 text-muted-foreground">Failed to load analytics. Please try again later.</p>
+      </main>
+    );
+  }
 
   const overviewCards = [
     { label: "Total Users", value: analytics.users.total, icon: Users, href: "/admin/users", color: "text-blue-600" },
-    { label: "Creators", value: analytics.users.creators, icon: ShieldIcon, href: "/admin/users?role=CREATOR", color: "text-emerald-600" },
+    { label: "Creators", value: analytics.users.creators, icon: Camera, href: "/admin/users?role=CREATOR", color: "text-emerald-600" },
     { label: "Brands", value: analytics.users.brands, icon: Building2, href: "/admin/users?role=BRAND", color: "text-violet-600" },
     { label: "Open Campaigns", value: analytics.campaigns.open, icon: Briefcase, href: "/admin/campaigns?status=OPEN", color: "text-amber-600" },
     { label: "Total Posts", value: analytics.content.posts, icon: FileText, href: "#", color: "text-sky-600" },
@@ -194,6 +202,4 @@ export default async function AdminDashboardPage() {
   );
 }
 
-function ShieldIcon(props: React.ComponentProps<typeof Users>) {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>;
-}
+

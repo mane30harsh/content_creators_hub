@@ -35,9 +35,11 @@ export async function POST(req: Request) {
   const result = await registerUser(body as RegisterInput);
 
   if (!result.success) {
+    // Error messages are stable server-side strings; if "already exists" is found, it's a 409
+    const isConflict = result.error === "An account with this email already exists.";
     return NextResponse.json(
       { message: result.error, fieldErrors: result.fieldErrors },
-      { status: result.error.includes("already exists") ? 409 : 400 }
+      { status: isConflict ? 409 : 400 }
     );
   }
 
