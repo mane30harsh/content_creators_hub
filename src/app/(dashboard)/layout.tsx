@@ -21,6 +21,7 @@ export default async function DashboardLayout({
   const navLinks =
     role === "ADMIN"
       ? [
+          { href: "/feed",             label: "Feed" },
           { href: "/admin/dashboard",  label: "Overview" },
           { href: "/admin/users",      label: "Users" },
           { href: "/admin/campaigns",  label: "Campaigns" },
@@ -28,6 +29,7 @@ export default async function DashboardLayout({
       : role === "BRAND"
       ? [
           { href: "/brand/dashboard",       label: "Dashboard" },
+          { href: "/feed",                  label: "Feed" },
           { href: "/brand/campaigns",       label: "Campaigns" },
           { href: "/brand/campaigns/new",   label: "Post Campaign" },
           { href: "/messages",              label: "Messages" },
@@ -36,6 +38,7 @@ export default async function DashboardLayout({
         ]
       : [
           { href: "/creator/dashboard",     label: "Dashboard" },
+          { href: "/feed",                  label: "Feed" },
           { href: "/campaigns",             label: "Browse" },
           { href: "/creator/campaigns",     label: "My Applications" },
           { href: "/messages",              label: "Messages" },

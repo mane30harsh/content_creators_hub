@@ -69,6 +69,15 @@ enum NotificationType {
   CAMPAIGN_REMINDER      // deadline approaching
   ADMIN_NOTICE           // admin message
   SYSTEM                 // system-level
+  LIKE                   // someone liked your post
+  COMMENT                // someone commented on your post
+}
+
+enum PostType {
+  POST
+  CAMPAIGN_ANNOUNCEMENT
+  COLLAB_UPDATE
+  INDUSTRY
 }
 
 enum ReportReason {
@@ -188,6 +197,7 @@ model User {
   posts            Post[]
   comments         Comment[]
   likes            Like[]
+  savedPosts       SavedPost[]
   followersRel     Follow[]       @relation("Following") // people following this user
   followingRel     Follow[]       @relation("Follower")  // people this user follows
 
@@ -671,13 +681,15 @@ model Notification {
 // =============================================================
 
 model Post {
-  id       String  @id @default(cuid())
+  id       String   @id @default(cuid())
   authorId String
+  type     PostType @default(POST)
   title    String?
-  body     String  @db.Text
-  mediaUrls String[] // array of media URLs
+  body     String   @db.Text
+  mediaUrls String[]  // array of media URLs
   tags     String[]
-  isPublic Boolean @default(true)
+  isPublic Boolean  @default(true)
+  shareCount Int    @default(0)
 
   // Moderation
   isRemoved     Boolean   @default(false)
@@ -687,11 +699,13 @@ model Post {
   author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments Comment[]
   likes    Like[]
+  savedBy  SavedPost[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([authorId])
+  @@index([type, createdAt])
   @@index([isPublic, createdAt])
   @@index([tags])
   @@map("posts")
@@ -752,6 +766,26 @@ model Like {
   @@index([postId])
   @@index([commentId])
   @@map("likes")
+}
+
+// =============================================================
+// SAVED POST — user bookmarks a post
+// =============================================================
+
+model SavedPost {
+  id     String @id @default(cuid())
+  userId String
+  postId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@index([userId])
+  @@index([postId])
+  @@map("saved_posts")
 }
 
 // =============================================================
