@@ -238,25 +238,29 @@ export async function reviewApplication(
     },
   });
 
-  // If accepted, notify via notification (non-blocking)
-  if (status === "ACCEPTED") {
-    const app = await prisma.campaignApplication.findUnique({
-      where: { id: applicationId },
-      select: { userId: true, campaign: { select: { title: true } } },
+  // Notify creator about status change
+  const app = await prisma.campaignApplication.findUnique({
+    where: { id: applicationId },
+    select: { userId: true, campaign: { select: { title: true } } },
+  });
+  if (app) {
+    const statusLabels: Record<string, string> = {
+      SHORTLISTED: "shortlisted",
+      ACCEPTED: "accepted",
+      REJECTED: "rejected",
+    };
+    const label = statusLabels[status] ?? status.toLowerCase();
+    await prisma.notification.create({
+      data: {
+        userId:        app.userId,
+        type:          "APPLICATION_UPDATED",
+        title:         `Application ${label}`,
+        body:          `Your application for "${app.campaign.title}" was ${label}.`,
+        referenceId:   applicationId,
+        referenceType: "CampaignApplication",
+        actionUrl:     `/creator/campaigns`,
+      },
     });
-    if (app) {
-      await prisma.notification.create({
-        data: {
-          userId:        app.userId,
-          type:          "APPLICATION_UPDATED",
-          title:         "Your application was accepted! 🎉",
-          body:          `You've been accepted for "${app.campaign.title}".`,
-          referenceId:   applicationId,
-          referenceType: "CampaignApplication",
-          actionUrl:     `/creator/campaigns`,
-        },
-      });
-    }
   }
 
   revalidatePath(`/brand/campaigns/${application.campaignId}`);

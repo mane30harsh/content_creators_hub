@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { isAppRole, ROLE_HOME } from "@/lib/roles";
 import { UserNav } from "@/components/shared/user-nav";
+import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
 
 export default async function DashboardLayout({
   children,
@@ -74,12 +75,15 @@ export default async function DashboardLayout({
             </nav>
           </div>
 
-          <UserNav
-            name={session.user.name ?? undefined}
-            email={session.user.email ?? undefined}
-            image={session.user.image ?? undefined}
-            role={isAppRole(role) ? role : "CREATOR"}
-          />
+          <div className="flex items-center gap-1">
+            <NotificationDropdown />
+            <UserNav
+              name={session.user.name ?? undefined}
+              email={session.user.email ?? undefined}
+              image={session.user.image ?? undefined}
+              role={isAppRole(role) ? role : "CREATOR"}
+            />
+          </div>
         </div>
       </header>
 

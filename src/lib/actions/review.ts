@@ -104,6 +104,19 @@ export async function createReview(rawData: ReviewInput): Promise<ActionResult<{
     },
   });
 
+  // Notify the reviewed user
+  await prisma.notification.create({
+    data: {
+      userId:        subjectId,
+      type:          "REVIEW_RECEIVED",
+      title:         "New review received",
+      body:          `You received a ${rating}-star review.`,
+      referenceId:   review.id,
+      referenceType: "Review",
+      actionUrl:     `/campaigns/${campaignId}`,
+    },
+  });
+
   await updateAggregatedRatings(subjectId);
 
   revalidatePath(`/campaigns/${campaignId}`);

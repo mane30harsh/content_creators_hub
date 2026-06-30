@@ -165,6 +165,24 @@ export async function toggleLike(
     await prisma.like.create({
       data: { userId: user.id, postId },
     });
+
+    // Notify post author (unless liking own post)
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      select: { authorId: true },
+    });
+    if (post && post.authorId !== user.id) {
+      await prisma.notification.create({
+        data: {
+          userId:        post.authorId,
+          type:          "LIKE",
+          title:         "Someone liked your post",
+          referenceId:   postId,
+          referenceType: "Post",
+          actionUrl:     `/posts/${postId}`,
+        },
+      });
+    }
   }
 
   const count = await prisma.like.count({ where: { postId } });
@@ -234,6 +252,25 @@ export async function createComment(
       parentId: data.parentId || null,
     },
   });
+
+  // Notify post author (unless commenting on own post)
+  const post = await prisma.post.findUnique({
+    where: { id: data.postId },
+    select: { authorId: true },
+  });
+  if (post && post.authorId !== user.id) {
+    await prisma.notification.create({
+      data: {
+        userId:        post.authorId,
+        type:          "COMMENT",
+        title:         "New comment on your post",
+        body:          data.body.length > 100 ? data.body.slice(0, 100) + "…" : data.body,
+        referenceId:   data.postId,
+        referenceType: "Post",
+        actionUrl:     `/posts/${data.postId}`,
+      },
+    });
+  }
 
   revalidatePath(`/posts/${data.postId}`);
   revalidatePath("/feed");
