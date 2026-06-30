@@ -137,11 +137,6 @@ async function updateAggregatedRatings(userId: string) {
   const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
   const reviewCount = reviews.length;
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: {},
-  });
-
   const creatorProfile = await prisma.creatorProfile.findUnique({ where: { userId } });
   if (creatorProfile) {
     await prisma.creatorProfile.update({
