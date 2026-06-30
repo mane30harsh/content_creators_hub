@@ -62,24 +62,30 @@ export function PostCard({ post, liked: initialLiked, saved: initialSaved }: Pro
     .toUpperCase();
 
   async function handleToggleLike() {
-    const res = await toggleLike(post.id);
-    if (res.success) {
-      setLiked(res.data.liked);
-      setLikeCount(res.data.likeCount);
-    }
+    try {
+      const res = await toggleLike(post.id);
+      if (res.success) {
+        setLiked(res.data.liked);
+        setLikeCount(res.data.likeCount);
+      }
+    } catch { /* ignore */ }
   }
 
   async function handleToggleSave() {
-    const res = await toggleSave(post.id);
-    if (res.success) setSaved(res.data.saved);
+    try {
+      const res = await toggleSave(post.id);
+      if (res.success) setSaved(res.data.saved);
+    } catch { /* ignore */ }
   }
 
   async function handleShare() {
-    const res = await sharePost(post.id);
-    if (res.success) {
-      const url = `${window.location.origin}/posts/${post.id}`;
-      await navigator.clipboard.writeText(url);
-    }
+    try {
+      const res = await sharePost(post.id);
+      if (res.success) {
+        const url = `${window.location.origin}/posts/${post.id}`;
+        await navigator.clipboard.writeText(url);
+      }
+    } catch { /* ignore */ }
   }
 
   const timeAgo = formatTimeAgo(new Date(post.createdAt));
@@ -152,12 +158,13 @@ export function PostCard({ post, liked: initialLiked, saved: initialSaved }: Pro
           <Heart className={`h-4 w-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
           {likeCount > 0 && <span className="text-xs">{likeCount}</span>}
         </Button>
-        <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground" asChild>
-          <Link href={`/posts/${post.id}`}>
-            <MessageCircle className="h-4 w-4" />
-            {post._count.comments > 0 && <span className="text-xs">{post._count.comments}</span>}
-          </Link>
-        </Button>
+        <Link
+          href={`/posts/${post.id}`}
+          className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+        >
+          <MessageCircle className="h-4 w-4" />
+          {post._count.comments > 0 && <span className="text-xs">{post._count.comments}</span>}
+        </Link>
         <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground" onClick={handleShare}>
           <Share2 className="h-4 w-4" />
           {post.shareCount > 0 && <span className="text-xs">{post.shareCount}</span>}
