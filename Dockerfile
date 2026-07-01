@@ -12,10 +12,11 @@ RUN npm ci --only=production
 # ─── Builder ───────────────────────────────────────────────────
 FROM base AS builder
 COPY package.json package-lock.json* ./
-RUN npm ci
+COPY prisma/schema.prisma ./prisma/
+RUN npm ci --ignore-scripts && npx prisma generate
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npx prisma generate && npm run build
+RUN npm run build
 
 # ─── Runner ────────────────────────────────────────────────────
 FROM base AS runner
@@ -30,6 +31,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/tsx ./node_modules/tsx
 
 USER nextjs
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "node /app/node_modules/prisma/build/index.js migrate deploy && node server.js"]
