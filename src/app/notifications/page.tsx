@@ -2,6 +2,7 @@ import { CheckCheck } from "lucide-react";
 import { getNotifications, markAllAsRead } from "@/lib/actions/notification";
 import { NotificationsList } from "./notifications-list";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "@/components/shared/back-button";
 import type { NotificationItem } from "@/components/notifications/types";
 
 export const metadata = { title: "Notifications – Content Creators Hub" };
@@ -11,6 +12,7 @@ export default async function NotificationsPage() {
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-10">
+      <BackButton />
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Notifications</h1>

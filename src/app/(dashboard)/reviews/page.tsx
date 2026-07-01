@@ -3,6 +3,7 @@ import { getCompletedCampaignsForReview } from "@/lib/actions/review";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MessageSquareText, Inbox } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 
 export const metadata = { title: "Reviews – Content Creators Hub" };
 
@@ -13,6 +14,7 @@ export default async function ReviewsPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
+      <BackButton />
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Reviews</h1>
         <p className="mt-1 text-sm text-muted-foreground">
