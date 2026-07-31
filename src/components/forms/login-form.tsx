@@ -35,26 +35,32 @@ export function LoginForm() {
     setServerError(null);
     setIsSubmitting(true);
 
-    const result = await signIn("credentials", { ...values, redirect: false });
+    try {
+      const result = await signIn("credentials", { ...values, redirect: false });
 
-    if (result?.error) {
-      setServerError("Invalid email or password. Please try again.");
+      if (result?.error) {
+        setServerError("Invalid email or password. Please try again.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Refresh session to get role, then redirect
+      const session = await update();
+      const role = session?.user?.role;
+      const destination =
+        callbackUrl && callbackUrl.startsWith("/")
+          ? callbackUrl
+          : role && isAppRole(role)
+          ? ROLE_HOME[role]
+          : "/";
+
+      router.push(destination);
+      router.refresh();
+    } catch (err) {
+      console.error("[LoginForm] error:", err);
+      setServerError("Something went wrong. Please try again.");
       setIsSubmitting(false);
-      return;
     }
-
-    // Refresh session to get role, then redirect
-    const session = await update();
-    const role = session?.user?.role;
-    const destination =
-      callbackUrl && callbackUrl.startsWith("/")
-        ? callbackUrl
-        : role && isAppRole(role)
-        ? ROLE_HOME[role]
-        : "/";
-
-    router.push(destination);
-    router.refresh();
   }
 
   return (
