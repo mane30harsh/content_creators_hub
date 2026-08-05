@@ -16,7 +16,7 @@ export const registerSchema = z
     name: z
       .string()
       .min(2, "Name must be at least 2 characters.")
-      .max(60, "Name must be 60 characters or less."),
+      .max(80, "Name must be 80 characters or less."),
     email: z.string().email("Enter a valid email address."),
     role: z.enum(["CREATOR", "BRAND"], { message: "Select Creator or Brand." }),
     password: z
@@ -25,6 +25,14 @@ export const registerSchema = z
       .regex(/[A-Z]/, "Must contain at least one uppercase letter.")
       .regex(/[0-9]/, "Must contain at least one number."),
     confirmPassword: z.string(),
+    websiteUrl: z
+      .string()
+      .optional()
+      .or(z.literal(""))
+      .refine((v) => !v || /^https?:\/\/.+/.test(v), {
+        message: "Must be a valid URL starting with http:// or https://",
+      }),
+    industry: z.string().optional().or(z.literal("")),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {
@@ -37,7 +45,10 @@ export const registerSchema = z
     if (data.name.trim().length < 2) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: data.role === "BRAND" ? "Company name must be at least 2 characters." : "Full name must be at least 2 characters.",
+        message:
+          data.role === "BRAND"
+            ? "Company / Brand name must be at least 2 characters."
+            : "Full name must be at least 2 characters.",
         path: ["name"],
       });
     }

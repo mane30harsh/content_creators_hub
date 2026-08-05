@@ -3,15 +3,16 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import {
   Eye, EyeOff, Loader2, AlertCircle,
-  Pencil, Store, CheckCircle2,
+  Pencil, Store, CheckCircle2, Building2, Globe,
 } from "lucide-react";
 
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
+import { INDUSTRIES } from "@/lib/validations/brand-profile";
 import { registerUser } from "@/lib/actions/auth";
 import { ROLE_DESCRIPTIONS } from "@/lib/roles";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,9 @@ import { Input } from "@/components/ui/input";
 import {
   Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from "@/components/ui/form";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 const ROLE_OPTIONS = [
@@ -98,12 +102,15 @@ export function RegisterForm() {
       role: "CREATOR",
       password: "",
       confirmPassword: "",
+      websiteUrl: "",
+      industry: "",
     },
     mode: "onChange",
   });
 
-  const watchedRole = form.watch("role");
-  const watchedPassword = form.watch("password");
+  const selectedRole = useWatch({ control: form.control, name: "role" }) || "CREATOR";
+  const watchedPassword = useWatch({ control: form.control, name: "password" }) || "";
+  const isBrand = selectedRole === "BRAND";
 
   function onSubmit(values: RegisterInput) {
     setServerError(null);
@@ -128,7 +135,6 @@ export function RegisterForm() {
       });
 
       if (signInResult?.error) {
-        // Account created but sign-in failed — send to login
         router.push("/login?registered=1");
         return;
       }
@@ -165,11 +171,14 @@ export function RegisterForm() {
                     <button
                       key={value}
                       type="button"
-                      onClick={() => field.onChange(value)}
+                      onClick={() => {
+                        field.onChange(value);
+                        form.clearErrors();
+                      }}
                       className={cn(
                         "flex flex-col items-start gap-1.5 rounded-xl border-2 p-4 text-left transition-all",
                         selected
-                          ? "border-primary bg-primary/5"
+                          ? "border-primary bg-primary/5 shadow-sm"
                           : "border-border hover:border-muted-foreground/40 hover:bg-muted/40"
                       )}
                     >
@@ -190,26 +199,96 @@ export function RegisterForm() {
           )}
         />
 
-        {/* Name / Brand Name */}
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                {watchedRole === "BRAND" ? "Brand / Company name" : "Full name"}
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder={watchedRole === "BRAND" ? "e.g. Acme Corp" : "Jane Doe"}
-                  autoComplete={watchedRole === "BRAND" ? "organization" : "name"}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Dynamic Fields for Brand vs Creator */}
+        {isBrand ? (
+          <>
+            {/* Brand / Company Name */}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-1.5">
+                    <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
+                    Company / Brand name
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="e.g. Acme Corp"
+                      autoComplete="organization"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Industry (Brand Optional) */}
+            <FormField
+              control={form.control}
+              name="industry"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Industry</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select industry (optional)" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="max-h-60">
+                      {INDUSTRIES.map((ind) => (
+                        <SelectItem key={ind} value={ind}>
+                          {ind}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Website URL (Brand Optional) */}
+            <FormField
+              control={form.control}
+              name="websiteUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-1.5">
+                    <Globe className="h-3.5 w-3.5 text-muted-foreground" />
+                    Company website <span className="text-xs text-muted-foreground">(optional)</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="url"
+                      placeholder="https://example.com"
+                      autoComplete="url"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        ) : (
+          /* Full Name (Creator) */
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Full name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Jane Doe" autoComplete="name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         {/* Email */}
         <FormField
@@ -217,11 +296,11 @@ export function RegisterForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email address</FormLabel>
+              <FormLabel>{isBrand ? "Work email address" : "Email address"}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={isBrand ? "contact@company.com" : "you@example.com"}
                   autoComplete="email"
                   {...field}
                 />
@@ -303,7 +382,7 @@ export function RegisterForm() {
               Creating account…
             </>
           ) : (
-            "Create account"
+            `Create ${isBrand ? "Brand" : "Creator"} account`
           )}
         </Button>
 

@@ -38,7 +38,7 @@ export async function registerUser(
     };
   }
 
-  const { name, email, password, role } = parsed.data;
+  const { name, email, password, role, websiteUrl, industry } = parsed.data;
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -59,7 +59,15 @@ export async function registerUser(
       role,
       // Eagerly create the matching profile so onboarding flows work
       ...(role === "CREATOR" && { creatorProfile: { create: {} } }),
-      ...(role === "BRAND"   && { brandProfile:   { create: { companyName: name } } }),
+      ...(role === "BRAND"   && {
+        brandProfile: {
+          create: {
+            companyName: name,
+            ...(websiteUrl ? { websiteUrl } : {}),
+            ...(industry ? { industry } : {}),
+          },
+        },
+      }),
     },
   });
 
