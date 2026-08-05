@@ -13,12 +13,14 @@ export default async function BrandOnboardingPage() {
 
   const profile = await prisma.brandProfile.findUnique({
     where: { userId: user.id },
-    select: { slug: true },
+    select: { slug: true, companyName: true },
   });
 
   if (profile?.slug) {
     redirect("/brand/dashboard");
   }
+
+  const initialCompanyName = profile?.companyName || user.name || "";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-muted/40 to-background">
@@ -44,7 +46,7 @@ export default async function BrandOnboardingPage() {
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
-          <BrandOnboardingForm />
+          <BrandOnboardingForm initialCompanyName={initialCompanyName} />
         </div>
       </div>
     </div>

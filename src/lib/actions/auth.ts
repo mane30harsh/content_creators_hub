@@ -59,7 +59,7 @@ export async function registerUser(
       role,
       // Eagerly create the matching profile so onboarding flows work
       ...(role === "CREATOR" && { creatorProfile: { create: {} } }),
-      ...(role === "BRAND"   && { brandProfile:   { create: {} } }),
+      ...(role === "BRAND"   && { brandProfile:   { create: { companyName: name } } }),
     },
   });
 

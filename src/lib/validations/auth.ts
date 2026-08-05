@@ -26,9 +26,21 @@ export const registerSchema = z
       .regex(/[0-9]/, "Must contain at least one number."),
     confirmPassword: z.string(),
   })
-  .refine((d) => d.password === d.confirmPassword, {
-    message: "Passwords do not match.",
-    path: ["confirmPassword"],
+  .superRefine((data, ctx) => {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Passwords do not match.",
+        path: ["confirmPassword"],
+      });
+    }
+    if (data.name.trim().length < 2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: data.role === "BRAND" ? "Company name must be at least 2 characters." : "Full name must be at least 2 characters.",
+        path: ["name"],
+      });
+    }
   });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

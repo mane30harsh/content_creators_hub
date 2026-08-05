@@ -25,15 +25,15 @@ import {
   SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 
-export function BrandOnboardingForm() {
+export function BrandOnboardingForm({ initialCompanyName = "" }: { initialCompanyName?: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<BrandOnboardingInput>({
     resolver: zodResolver(brandOnboardingSchema),
     defaultValues: {
-      companyName: "",
-      slug: "",
+      companyName: initialCompanyName,
+      slug: initialCompanyName ? slugify(initialCompanyName) : "",
       tagline: "",
       industry: "",
       country: "",

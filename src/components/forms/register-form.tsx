@@ -102,6 +102,7 @@ export function RegisterForm() {
     mode: "onChange",
   });
 
+  const watchedRole = form.watch("role");
   const watchedPassword = form.watch("password");
 
   function onSubmit(values: RegisterInput) {
@@ -189,15 +190,21 @@ export function RegisterForm() {
           )}
         />
 
-        {/* Name */}
+        {/* Name / Brand Name */}
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full name</FormLabel>
+              <FormLabel>
+                {watchedRole === "BRAND" ? "Brand / Company name" : "Full name"}
+              </FormLabel>
               <FormControl>
-                <Input placeholder="Jane Doe" autoComplete="name" {...field} />
+                <Input
+                  placeholder={watchedRole === "BRAND" ? "e.g. Acme Corp" : "Jane Doe"}
+                  autoComplete={watchedRole === "BRAND" ? "organization" : "name"}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
