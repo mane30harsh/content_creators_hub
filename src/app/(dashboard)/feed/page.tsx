@@ -8,6 +8,7 @@ import { LoadMore } from "./load-more";
 
 import { BackButton } from "@/components/shared/back-button";
 
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Feed – Content Creators Hub" };
 
 interface Props {

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { BackButton } from "@/components/shared/back-button";
 import type { NotificationItem } from "@/components/notifications/types";
 
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Notifications – Content Creators Hub" };
 
 export default async function NotificationsPage() {
