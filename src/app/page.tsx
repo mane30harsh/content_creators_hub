@@ -76,6 +76,21 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
+        <div className="mx-auto flex max-w-4xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
+          <p>© {new Date().getFullYear()} Content Creators Hub. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <Link href="/terms" className="hover:text-foreground transition-colors underline-offset-4 hover:underline">
+              Terms of Service
+            </Link>
+            <Link href="/privacy" className="hover:text-foreground transition-colors underline-offset-4 hover:underline">
+              Privacy Policy
+            </Link>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
