@@ -18,6 +18,7 @@ export const registerSchema = z
       .min(2, "Name must be at least 2 characters.")
       .max(80, "Name must be 80 characters or less."),
     email: z.string().email("Enter a valid email address."),
+    country: z.string().min(1, "Select your country."),
     role: z.enum(["CREATOR", "BRAND"], { message: "Select Creator or Brand." }),
     password: z
       .string()

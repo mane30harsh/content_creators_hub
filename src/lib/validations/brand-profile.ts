@@ -91,7 +91,7 @@ export const brandOnboardingSchema = z.object({
     .optional()
     .or(z.literal("")),
   industry: z.string().min(1, "Select an industry"),
-  country: z.string().max(60).optional().or(z.literal("")),
+  country: z.string().min(1, "Country is required").max(60),
   city: z.string().max(60).optional().or(z.literal("")),
   bio: z
     .string()

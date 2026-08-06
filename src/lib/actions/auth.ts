@@ -38,7 +38,7 @@ export async function registerUser(
     };
   }
 
-  const { name, email, password, role, websiteUrl, industry } = parsed.data;
+  const { name, email, country, password, role, websiteUrl, industry } = parsed.data;
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -58,11 +58,12 @@ export async function registerUser(
       password: hashedPassword,
       role,
       // Eagerly create the matching profile so onboarding flows work
-      ...(role === "CREATOR" && { creatorProfile: { create: {} } }),
+      ...(role === "CREATOR" && { creatorProfile: { create: { country } } }),
       ...(role === "BRAND"   && {
         brandProfile: {
           create: {
             companyName: name,
+            country,
             ...(websiteUrl ? { websiteUrl } : {}),
             ...(industry ? { industry } : {}),
           },

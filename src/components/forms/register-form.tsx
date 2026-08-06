@@ -8,11 +8,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import {
   Eye, EyeOff, Loader2, AlertCircle,
-  Pencil, Store, CheckCircle2, Building2, Globe,
+  Pencil, Store, CheckCircle2, Building2, Globe, MapPin,
 } from "lucide-react";
 
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import { INDUSTRIES } from "@/lib/validations/brand-profile";
+import { COUNTRIES } from "@/lib/validations/campaign";
 import { registerUser } from "@/lib/actions/auth";
 import { ROLE_DESCRIPTIONS } from "@/lib/roles";
 import { Button } from "@/components/ui/button";
@@ -99,6 +100,7 @@ export function RegisterForm() {
     defaultValues: {
       name: "",
       email: "",
+      country: "",
       role: "CREATOR",
       password: "",
       confirmPassword: "",
@@ -210,7 +212,7 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel className="flex items-center gap-1.5">
                     <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
-                    Company / Brand name
+                    Company / Brand name <span className="text-destructive">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -280,7 +282,7 @@ export function RegisterForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full name</FormLabel>
+                <FormLabel>Full name <span className="text-destructive">*</span></FormLabel>
                 <FormControl>
                   <Input placeholder="Jane Doe" autoComplete="name" {...field} />
                 </FormControl>
@@ -290,13 +292,44 @@ export function RegisterForm() {
           />
         )}
 
+        {/* Country (Mandatory for both Creator & Brand) */}
+        <FormField
+          control={form.control}
+          name="country"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                Country <span className="text-destructive">*</span>
+              </FormLabel>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your country…" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="max-h-60">
+                  {COUNTRIES.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {/* Email */}
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{isBrand ? "Work email address" : "Email address"}</FormLabel>
+              <FormLabel>
+                {isBrand ? "Work email address" : "Email address"} <span className="text-destructive">*</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   type="email"
@@ -316,7 +349,7 @@ export function RegisterForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Password <span className="text-destructive">*</span></FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
@@ -349,7 +382,7 @@ export function RegisterForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm password</FormLabel>
+              <FormLabel>Confirm password <span className="text-destructive">*</span></FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input

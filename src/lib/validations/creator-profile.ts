@@ -85,7 +85,7 @@ export const creatorProfileSchema = z.object({
   bio: z.string().max(500, "Bio must be 500 characters or less").optional().or(z.literal("")),
 
   // Location
-  country: z.string().max(60).optional().or(z.literal("")),
+  country: z.string().min(1, "Country is required").max(60),
   city: z.string().max(60).optional().or(z.literal("")),
 
   // Arrays
