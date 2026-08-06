@@ -11,6 +11,7 @@ import { MapPin, Mail, Calendar } from "lucide-react";
 import { MessageUserButton } from "@/components/messages/message-user-button";
 import { ReviewCard } from "@/components/reviews/review-card";
 import { getSubjectReviews } from "@/lib/actions/review";
+import { formatNiches } from "@/lib/validations/creator-profile";
 import type { Metadata } from "next";
 
 interface Props {
@@ -161,13 +162,13 @@ export default async function CreatorPublicProfilePage({ params }: Props) {
               </section>
             )}
 
-            {creator.niche.length > 0 && (
+            {formatNiches(creator.niche).length > 0 && (
               <section>
                 <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   Niches
                 </h2>
                 <div className="flex flex-wrap gap-2">
-                  {creator.niche.map((n: string) => (
+                  {formatNiches(creator.niche).map((n: string) => (
                     <span
                       key={n}
                       className="inline-flex items-center rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium"

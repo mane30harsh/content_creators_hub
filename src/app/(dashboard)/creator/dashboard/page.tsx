@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AvailabilityBadge } from "@/components/creator/availability-badge";
 import { Separator } from "@/components/ui/separator";
+import { formatNiches } from "@/lib/validations/creator-profile";
 import {
   Instagram,
   Youtube,
@@ -223,12 +224,12 @@ export default async function CreatorDashboardPage() {
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Niches
               </p>
-              {profile.niche.length > 0 ? (
+              {formatNiches(profile.niche).length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
-                  {profile.niche.map((n: string) => (
+                  {formatNiches(profile.niche).map((n: string) => (
                     <span
                       key={n}
-                      className="inline-flex rounded-full border border-border bg-muted px-2.5 py-0.5 text-xs"
+                      className="inline-flex rounded-full border border-border bg-muted px-2.5 py-0.5 text-xs font-medium"
                     >
                       {n}
                     </span>

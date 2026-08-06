@@ -24,6 +24,17 @@ export const NICHES = [
   "Other",
 ] as const;
 
+export function formatNiches(niches: string[]): string[] {
+  if (!niches || niches.length === 0) return [];
+  const customNiches = niches.filter(
+    (n) => !NICHES.includes(n as (typeof NICHES)[number])
+  );
+  if (customNiches.length > 0) {
+    return niches.filter((n) => n !== "Other");
+  }
+  return niches.map((n) => (n === "Other" ? "Other / Custom" : n));
+}
+
 export const LANGUAGES = [
   "English",
   "Spanish",
