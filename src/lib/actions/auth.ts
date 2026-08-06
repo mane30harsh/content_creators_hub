@@ -4,13 +4,16 @@ import bcrypt from "bcryptjs";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { auth } from "@/lib/auth";
 import {
   registerSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  changePasswordSchema,
   type RegisterInput,
   type ForgotPasswordInput,
   type ResetPasswordInput,
+  type ChangePasswordInput,
 } from "@/lib/validations/auth";
 
 type ActionResult<T = void> =
@@ -214,3 +217,52 @@ export async function verifyEmail(token: string): Promise<ActionResult<void>> {
 
   return { success: true, data: undefined };
 }
+
+// ─── Change password (authenticated) ────────────────────────────────────────
+
+export async function changePassword(
+  rawData: ChangePasswordInput
+): Promise<ActionResult<void>> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "You must be signed in to change your password." };
+  }
+
+  const parsed = changePasswordSchema.safeParse(rawData);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: "Validation failed.",
+      fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
+    };
+  }
+
+  const { currentPassword, newPassword } = parsed.data;
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { id: true, password: true },
+  });
+
+  if (!user || !user.password) {
+    return { success: false, error: "Cannot change password for OAuth accounts." };
+  }
+
+  const isValid = await bcrypt.compare(currentPassword, user.password);
+  if (!isValid) {
+    return {
+      success: false,
+      error: "Current password is incorrect.",
+      fieldErrors: { currentPassword: ["Current password is incorrect."] },
+    };
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashedPassword },
+  });
+
+  return { success: true, data: undefined };
+}
+

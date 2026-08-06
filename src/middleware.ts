@@ -4,6 +4,7 @@ import { isAppRole, ROLE_HOME } from "@/lib/roles";
 import type { AppRole } from "@/lib/roles";
 
 const PROTECTED: { prefix: string; roles: AppRole[] }[] = [
+  { prefix: "/settings",            roles: ["CREATOR", "BRAND", "ADMIN"] },
   { prefix: "/dashboard",           roles: ["CREATOR", "BRAND", "ADMIN"] },
   { prefix: "/feed",                roles: ["CREATOR", "BRAND", "ADMIN"] },
   { prefix: "/notifications",       roles: ["CREATOR", "BRAND", "ADMIN"] },
