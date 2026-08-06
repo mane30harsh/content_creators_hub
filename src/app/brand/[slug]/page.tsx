@@ -9,6 +9,7 @@ import {
   Package, BarChart2, ExternalLink, Building2,
 } from "lucide-react";
 import { MessageUserButton } from "@/components/messages/message-user-button";
+import { BackButton } from "@/components/shared/back-button";
 import { ReviewCard } from "@/components/reviews/review-card";
 import { getSubjectReviews } from "@/lib/actions/review";
 import type { Metadata } from "next";
@@ -65,6 +66,9 @@ export default async function BrandPublicProfilePage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-background">
+      <div className="mx-auto max-w-5xl px-4 pt-4">
+        <BackButton label="Back" />
+      </div>
       {/* ── Cover banner ── */}
       <div
         className="h-48 w-full sm:h-64"

@@ -12,6 +12,7 @@ import { MessageUserButton } from "@/components/messages/message-user-button";
 import { ReviewCard } from "@/components/reviews/review-card";
 import { getSubjectReviews } from "@/lib/actions/review";
 import { formatNiches } from "@/lib/validations/creator-profile";
+import { BackButton } from "@/components/shared/back-button";
 import type { Metadata } from "next";
 
 interface Props {
@@ -81,6 +82,9 @@ export default async function CreatorPublicProfilePage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-background">
+      <div className="mx-auto max-w-4xl px-4 pt-4">
+        <BackButton label="Back" />
+      </div>
       {/* Cover Banner */}
       <div
         className="h-48 w-full bg-gradient-to-r from-slate-200 to-slate-300 sm:h-64"

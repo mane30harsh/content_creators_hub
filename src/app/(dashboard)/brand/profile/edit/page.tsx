@@ -7,6 +7,7 @@ import { ProductsPanel } from "./products-panel";
 import { CampaignShowcasePanel } from "./campaign-showcase-panel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExternalLink } from "lucide-react";
+import { BackButton } from "@/components/shared/back-button";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ export default async function BrandProfileEditPage() {
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-10">
+      <BackButton href="/brand/dashboard" label="Back to Dashboard" />
       {/* Page header */}
       <div className="mb-8 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>

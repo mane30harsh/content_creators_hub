@@ -6,6 +6,8 @@ import { PostForm } from "@/components/feed/post-form";
 import { FeedFilter } from "./feed-filter";
 import { LoadMore } from "./load-more";
 
+import { BackButton } from "@/components/shared/back-button";
+
 export const metadata = { title: "Feed – Content Creators Hub" };
 
 interface Props {
@@ -23,9 +25,12 @@ export default async function FeedPage({ searchParams }: Props) {
     : { likedSet: new Set<string>(), savedSet: new Set<string>() };
 
   const role = user.role;
+  const backHref = role === "CREATOR" ? "/creator/dashboard" : role === "BRAND" ? "/brand/dashboard" : "/admin/dashboard";
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-10">
+      <BackButton href={backHref} label="Back to Dashboard" />
+
       <div className="mb-8">
         <h1 className="text-2xl font-bold tracking-tight">Feed</h1>
         <p className="mt-1 text-sm text-muted-foreground">
