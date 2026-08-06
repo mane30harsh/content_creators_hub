@@ -102,7 +102,7 @@ export function ApplyForm({ campaignId, campaignTitle }: ApplyFormProps) {
           name="proposedRate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Proposed rate (USD)</FormLabel>
+              <FormLabel>Proposed collab price (USD)</FormLabel>
               <FormDescription>
                 Optional. Leave empty to accept the brand&apos;s budget range.
               </FormDescription>
