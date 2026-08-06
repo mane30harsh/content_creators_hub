@@ -30,6 +30,7 @@ import {
 import { NicheSelector } from "@/components/creator/niche-selector";
 import { LanguageSelector } from "@/components/creator/language-selector";
 import { AVAILABILITY_OPTIONS } from "@/lib/validations/creator-profile";
+import { COUNTRIES } from "@/lib/validations/campaign";
 
 export function OnboardingForm() {
   const router = useRouter();
@@ -146,10 +147,21 @@ export function OnboardingForm() {
             name="country"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Country</FormLabel>
-                <FormControl>
-                  <Input placeholder="United States" {...field} />
-                </FormControl>
+                <FormLabel>Country *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select country…" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="max-h-60">
+                    {COUNTRIES.map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {c}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

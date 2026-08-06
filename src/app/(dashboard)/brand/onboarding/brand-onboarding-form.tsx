@@ -12,6 +12,7 @@ import {
   type BrandOnboardingInput,
   INDUSTRIES,
 } from "@/lib/validations/brand-profile";
+import { COUNTRIES } from "@/lib/validations/campaign";
 import { completeBrandOnboarding } from "@/lib/actions/brand-profile";
 import {
   Form, FormField, FormItem, FormLabel,
@@ -193,11 +194,22 @@ export function BrandOnboardingForm({ initialCompanyName = "" }: { initialCompan
               <FormItem>
                 <FormLabel className="flex items-center gap-1.5">
                   <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-                  Country
+                  Country <span className="text-destructive">*</span>
                 </FormLabel>
-                <FormControl>
-                  <Input placeholder="United States" {...field} />
-                </FormControl>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select country…" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="max-h-60">
+                    {COUNTRIES.map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {c}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
