@@ -17,7 +17,7 @@ export default async function AuthLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-muted/40 to-background">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Minimal header */}
       <header className="flex h-14 items-center border-b border-border bg-background/80 px-6 backdrop-blur">
         <Link href="/" className="flex items-center gap-2">
