@@ -133,6 +133,24 @@ export const campaignSchema = z
 
 export type CampaignInput = z.infer<typeof campaignSchema>;
 
+export const SUPPORTED_CURRENCIES = [
+  { code: "USD", symbol: "$", label: "USD ($)" },
+  { code: "INR", symbol: "₹", label: "INR (₹)" },
+  { code: "EUR", symbol: "€", label: "EUR (€)" },
+  { code: "GBP", symbol: "£", label: "GBP (£)" },
+  { code: "CAD", symbol: "C$", label: "CAD (C$)" },
+  { code: "AUD", symbol: "A$", label: "AUD (A$)" },
+  { code: "AED", symbol: "AED", label: "AED (AED)" },
+  { code: "SGD", symbol: "S$", label: "SGD (S$)" },
+  { code: "JPY", symbol: "¥", label: "JPY (¥)" },
+] as const;
+
+export function getCurrencySymbol(code?: string | null): string {
+  if (!code) return "$";
+  const found = SUPPORTED_CURRENCIES.find((c) => c.code === code.toUpperCase());
+  return found ? found.symbol : code;
+}
+
 // ─── Application schema ──────────────────────────────────────────
 
 export const applicationSchema = z.object({
@@ -142,6 +160,7 @@ export const applicationSchema = z.object({
     .min(50, "Pitch must be at least 50 characters — brands want to know you.")
     .max(2000, "Pitch must be 2,000 characters or less."),
   proposedRate: dollarAmountOrEmpty,
+  currency: z.string().optional().default("USD"),
 });
 
 export type ApplicationInput = z.infer<typeof applicationSchema>;

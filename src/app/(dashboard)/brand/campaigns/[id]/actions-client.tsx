@@ -7,12 +7,14 @@ import { ApplicationStatusBadge } from "@/components/campaigns/application-statu
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageUserButton } from "@/components/messages/message-user-button";
+import { getCurrencySymbol } from "@/lib/validations/campaign";
 
 interface Application {
   id: string;
   status: string;
   pitch: string | null;
   proposedRateCents: number | null;
+  currency: string | null;
   createdAt: Date;
   user: { id: string };
   creatorProfile: {
@@ -74,7 +76,7 @@ export function ApplicationRow({ app }: { app: Application }) {
         <div className="flex items-center gap-2 shrink-0">
           <ApplicationStatusBadge status={app.status} />
           {app.proposedRateCents && (
-            <Badge variant="outline">${(app.proposedRateCents / 100).toLocaleString()}</Badge>
+            <Badge variant="outline">{getCurrencySymbol(app.currency)}${(app.proposedRateCents / 100).toLocaleString()}</Badge>
           )}
           <MessageUserButton userId={app.user.id} size="sm" variant="ghost" label="" />
         </div>

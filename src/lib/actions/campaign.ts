@@ -429,7 +429,7 @@ export async function applyToCampaign(
   // Check campaign exists and is open
   const campaign = await prisma.campaign.findFirst({
     where: { id: campaignId, status: "OPEN", isPublic: true },
-    select: { id: true, title: true, maxApplications: true, _count: { select: { applications: true } } },
+    select: { id: true, title: true, currency: true, maxApplications: true, _count: { select: { applications: true } } },
   });
   if (!campaign) return { success: false, error: "Campaign is not accepting applications." };
 
@@ -451,7 +451,7 @@ export async function applyToCampaign(
       userId:           user.id,
       pitch,
       proposedRateCents: toCents(proposedRate),
-      currency:          "USD",
+      currency:          parsed.data.currency || campaign.currency || "USD",
     },
   });
 

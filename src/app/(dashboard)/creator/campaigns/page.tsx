@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ApplicationStatusBadge } from "@/components/campaigns/application-status-badge";
 import { DeliverableBadge } from "@/components/campaigns/deliverable-badge";
 import { MessageUserButton } from "@/components/messages/message-user-button";
+import { getCurrencySymbol } from "@/lib/validations/campaign";
 
 function fmtDate(d?: Date | string | null) {
   if (!d) return null;
@@ -110,7 +111,7 @@ export default async function CreatorCampaignsPage() {
                         <ApplicationStatusBadge status={app.status} />
                         {app.proposedRateCents && (
                           <p className="text-xs text-muted-foreground">
-                            ${(app.proposedRateCents / 100).toLocaleString()}
+                            {getCurrencySymbol(app.currency)}{(app.proposedRateCents / 100).toLocaleString()}
                           </p>
                         )}
                         <MessageUserButton

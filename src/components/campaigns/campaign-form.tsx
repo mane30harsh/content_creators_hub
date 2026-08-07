@@ -9,6 +9,8 @@ import {
   type CampaignInput,
   DELIVERABLE_TYPE_LABELS,
   COUNTRIES,
+  SUPPORTED_CURRENCIES,
+  getCurrencySymbol,
 } from "@/lib/validations/campaign";
 import { NICHES, LANGUAGES } from "@/lib/validations/creator-profile";
 import { createCampaign, updateCampaign } from "@/lib/actions/campaign";
@@ -244,14 +246,40 @@ export function CampaignForm({ campaignId, defaultValues, mode }: CampaignFormPr
 
             <Card>
               <CardContent className="pt-4">
-                <Label className="text-sm font-medium">Budget range (USD)</Label>
-                <div className="mt-2 grid grid-cols-2 gap-3">
+                <div className="flex items-center justify-between gap-4 mb-3">
+                  <Label className="text-sm font-medium">Budget range</Label>
+                  <FormField
+                    control={form.control}
+                    name="currency"
+                    render={({ field }) => (
+                      <FormItem className="w-32">
+                        <Select value={field.value} onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger className="h-8 text-xs">
+                              <SelectValue placeholder="Currency" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {SUPPORTED_CURRENCIES.map((c) => (
+                              <SelectItem key={c.code} value={c.code} className="text-xs">
+                                {c.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
                   <FormField
                     control={form.control}
                     name="budgetMin"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs text-muted-foreground">Min ($)</FormLabel>
+                        <FormLabel className="text-xs text-muted-foreground">
+                          Min ({getCurrencySymbol(form.watch("currency"))})
+                        </FormLabel>
                         <FormControl>
                           <Input type="number" min={0} placeholder="500" {...field}
                             onChange={e => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))} />
@@ -265,7 +293,9 @@ export function CampaignForm({ campaignId, defaultValues, mode }: CampaignFormPr
                     name="budgetMax"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs text-muted-foreground">Max ($)</FormLabel>
+                        <FormLabel className="text-xs text-muted-foreground">
+                          Max ({getCurrencySymbol(form.watch("currency"))})
+                        </FormLabel>
                         <FormControl>
                           <Input type="number" min={0} placeholder="2000" {...field}
                             onChange={e => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))} />

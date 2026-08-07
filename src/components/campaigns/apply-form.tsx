@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { applicationSchema, type ApplicationInput } from "@/lib/validations/campaign";
+import {
+  applicationSchema,
+  type ApplicationInput,
+  SUPPORTED_CURRENCIES,
+  getCurrencySymbol,
+} from "@/lib/validations/campaign";
 import { applyToCampaign } from "@/lib/actions/campaign";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,13 +23,21 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ApplyFormProps {
   campaignId: string;
   campaignTitle: string;
+  campaignCurrency?: string;
 }
 
-export function ApplyForm({ campaignId, campaignTitle }: ApplyFormProps) {
+export function ApplyForm({ campaignId, campaignTitle, campaignCurrency }: ApplyFormProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -32,8 +45,16 @@ export function ApplyForm({ campaignId, campaignTitle }: ApplyFormProps) {
 
   const form = useForm<ApplicationInput>({
     resolver: zodResolver(applicationSchema),
-    defaultValues: { campaignId, pitch: "", proposedRate: undefined },
+    defaultValues: {
+      campaignId,
+      pitch: "",
+      proposedRate: undefined,
+      currency: campaignCurrency || "USD",
+    },
   });
+
+  const selectedCurrency = form.watch("currency") || "USD";
+  const currencySymbol = getCurrencySymbol(selectedCurrency);
 
   async function onSubmit(values: ApplicationInput) {
     setServerError(null);
@@ -97,32 +118,68 @@ export function ApplyForm({ campaignId, campaignTitle }: ApplyFormProps) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="proposedRate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Proposed collab price (USD)</FormLabel>
-              <FormDescription>
-                Optional. Leave empty to accept the brand&apos;s budget range.
-              </FormDescription>
-              <FormControl>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
-                  <Input
-                    type="number"
-                    min={0}
-                    placeholder="0"
-                    className="pl-7"
-                    {...field}
-                    onChange={e => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div>
+          <FormLabel>Proposed collab price</FormLabel>
+          <FormDescription className="mb-2">
+            Optional. Choose your currency and leave empty to accept the brand&apos;s budget range.
+          </FormDescription>
+          <div className="grid grid-cols-3 gap-3">
+            {/* Currency Select */}
+            <FormField
+              control={form.control}
+              name="currency"
+              render={({ field }) => (
+                <FormItem className="col-span-1">
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Currency" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {SUPPORTED_CURRENCIES.map((c) => (
+                        <SelectItem key={c.code} value={c.code}>
+                          {c.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Price Input */}
+            <FormField
+              control={form.control}
+              name="proposedRate"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormControl>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-semibold">
+                        {currencySymbol}
+                      </span>
+                      <Input
+                        type="number"
+                        min={0}
+                        placeholder="0"
+                        className="pl-8"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === "" ? undefined : Number(e.target.value)
+                          )
+                        }
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
 
         {serverError && (
           <p className="rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">

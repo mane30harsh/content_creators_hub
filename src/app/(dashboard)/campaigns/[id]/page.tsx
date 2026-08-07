@@ -332,7 +332,7 @@ export default async function CampaignDetailPage({ params }: Props) {
                   </Button>
                 </div>
               ) : isCreator && !isDeadlinePassed ? (
-                <ApplyForm campaignId={id} campaignTitle={campaign.title} />
+                <ApplyForm campaignId={id} campaignTitle={campaign.title} campaignCurrency={campaign.currency} />
               ) : isBrand ? (
                 <p className="text-sm text-muted-foreground text-center py-2">
                   Brands cannot apply to campaigns.
