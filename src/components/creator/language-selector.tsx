@@ -29,10 +29,10 @@ export function LanguageSelector({ value, onChange, error }: LanguageSelectorPro
               type="button"
               onClick={() => toggle(lang)}
               className={cn(
-                "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                "inline-flex items-center rounded-full border px-4 py-1.5 text-xs font-semibold transition-all duration-200",
                 selected
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-background text-foreground hover:bg-muted"
+                  ? "border-[#E60067] bg-[#E60067] text-white shadow-md scale-105"
+                  : "border-neutral-800 bg-neutral-900/90 text-neutral-300 hover:border-neutral-700"
               )}
             >
               {lang}

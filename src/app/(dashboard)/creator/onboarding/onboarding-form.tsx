@@ -243,9 +243,11 @@ export function OnboardingForm() {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending ? "Creating profile…" : "Complete Setup →"}
-        </Button>
+        <div className="pt-2">
+          <Button type="submit" variant="pinkPill" size="lg" className="w-full text-sm font-bold flex items-center justify-center gap-2" disabled={isPending}>
+            {isPending ? "Creating profile…" : "Complete Profile Setup →"}
+          </Button>
+        </div>
       </form>
     </Form>
   );

@@ -73,10 +73,10 @@ export function NicheSelector({ value = [], onChange, error }: NicheSelectorProp
               type="button"
               onClick={() => toggleStandard(niche)}
               className={cn(
-                "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                "inline-flex items-center rounded-full border px-4 py-1.5 text-xs font-semibold transition-all duration-200",
                 selected
-                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                  : "border-border bg-background text-foreground hover:bg-muted"
+                  ? "border-[#E60067] bg-[#E60067] text-white shadow-md scale-105"
+                  : "border-neutral-800 bg-neutral-900/90 text-neutral-300 hover:border-neutral-700"
               )}
             >
               {niche}
@@ -89,10 +89,10 @@ export function NicheSelector({ value = [], onChange, error }: NicheSelectorProp
           type="button"
           onClick={toggleOther}
           className={cn(
-            "inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+            "inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-semibold transition-all duration-200",
             isOtherSelected || customNiches.length > 0
-              ? "border-primary bg-primary text-primary-foreground shadow-sm"
-              : "border-border bg-background text-foreground hover:bg-muted"
+              ? "border-[#E60067] bg-[#E60067] text-white shadow-md scale-105"
+              : "border-neutral-800 bg-neutral-900/90 text-neutral-300 hover:border-neutral-700"
           )}
         >
           <Sparkles className="h-3 w-3" />

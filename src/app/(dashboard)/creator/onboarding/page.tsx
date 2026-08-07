@@ -19,10 +19,12 @@ export default async function OnboardingPage() {
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Welcome to the Hub 👋</h1>
-        <p className="mt-2 text-muted-foreground">
-          Let&apos;s get your creator profile set up in just a few steps.
+      <div className="mb-10 text-center space-y-2">
+        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
+          Setup yourself with <span className="text-[#EAB308]">Brridge</span>
+        </h1>
+        <p className="text-sm font-medium text-neutral-400">
+          Let&apos;s get your creator profiles set up in just a few steps.
         </p>
       </div>
       <OnboardingForm />
