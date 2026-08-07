@@ -24,9 +24,9 @@ export function UserNav({ name, email, image, role }: UserNavProps) {
 
   const profileHref =
     role === "CREATOR"
-      ? "/creator/profile/edit"
+      ? "/creator/profile"
       : role === "BRAND"
-      ? "/brand/profile/edit"
+      ? "/brand/profile"
       : "/admin/dashboard";
 
   return (
@@ -82,7 +82,7 @@ export function UserNav({ name, email, image, role }: UserNavProps) {
                 className="flex items-center gap-2.5 px-4 py-2 text-sm transition-colors hover:bg-muted"
               >
                 <User className="h-4 w-4 text-muted-foreground" />
-                Edit Profile
+                My Profile
               </Link>
               <Link
                 href="/settings"

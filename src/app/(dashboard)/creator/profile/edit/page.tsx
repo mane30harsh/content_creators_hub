@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { requireRole } from "@/lib/auth/guards";
 import { prisma } from "@/lib/prisma";
 import { ProfileEditForm } from "./profile-edit-form";
@@ -24,7 +25,7 @@ export default async function ProfileEditPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
-      <BackButton href="/creator/dashboard" label="Back to Dashboard" />
+      <BackButton href="/creator/profile" label="Back to Profile" />
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Edit Profile</h1>
@@ -32,13 +33,12 @@ export default async function ProfileEditPage() {
             Keep your profile fresh to attract the right brand partnerships.
           </p>
         </div>
-        <a
+        <Link
           href={`/creator/${profile.username}`}
           className="text-sm text-muted-foreground underline-offset-4 hover:underline"
-          target="_blank"
         >
           View public profile →
-        </a>
+        </Link>
       </div>
       <ProfileEditForm profile={profile} portfolioItems={portfolioItems} />
     </main>

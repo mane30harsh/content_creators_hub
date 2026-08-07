@@ -31,7 +31,7 @@ export default async function BrandProfileEditPage() {
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-10">
-      <BackButton href="/brand/dashboard" label="Back to Dashboard" />
+      <BackButton href="/brand/profile" label="Back to Profile" />
       {/* Page header */}
       <div className="mb-8 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -42,7 +42,6 @@ export default async function BrandProfileEditPage() {
         </div>
         <Link
           href={`/brand/${profile.slug}`}
-          target="_blank"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground underline-offset-4 hover:underline"
         >
           <ExternalLink className="h-3.5 w-3.5" />

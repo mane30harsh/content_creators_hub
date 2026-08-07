@@ -37,7 +37,7 @@ export default async function DashboardLayout({
           { href: "/brand/campaigns/new",   label: "Post Campaign" },
           { href: "/messages",              label: "Messages" },
           { href: "/reviews",               label: "Reviews" },
-          { href: "/brand/profile/edit",    label: "Profile" },
+          { href: "/brand/profile",         label: "Profile" },
         ]
       : [
           { href: "/creator/dashboard",     label: "Dashboard" },
@@ -46,7 +46,7 @@ export default async function DashboardLayout({
           { href: "/creator/campaigns",     label: "My Applications" },
           { href: "/messages",              label: "Messages" },
           { href: "/reviews",               label: "Reviews" },
-          { href: "/creator/profile/edit",  label: "Profile" },
+          { href: "/creator/profile",       label: "Profile" },
         ];
 
   return (
