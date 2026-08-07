@@ -14,6 +14,7 @@ import { applyToCampaign } from "@/lib/actions/campaign";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Send, Loader2 } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -187,8 +188,23 @@ export function ApplyForm({ campaignId, campaignTitle, campaignCurrency }: Apply
           </p>
         )}
 
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting…" : "Submit application"}
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full font-semibold shadow-md bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-200"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Submitting…
+            </>
+          ) : (
+            <>
+              <Send className="mr-2 h-4 w-4" />
+              Submit Application
+            </>
+          )}
         </Button>
       </form>
     </Form>

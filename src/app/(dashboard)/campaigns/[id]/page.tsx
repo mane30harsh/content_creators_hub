@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   Calendar, Users, DollarSign, Globe, Languages,
-  ArrowLeft, Building2, CheckCircle2, Clock
+  ArrowLeft, Building2, CheckCircle2, Clock, Sparkles, Send
 } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { getPublicCampaignDetail } from "@/lib/actions/campaign";
@@ -310,10 +310,23 @@ export default async function CampaignDetailPage({ params }: Props) {
           </Card>
 
           {/* Apply card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Apply to this campaign</CardTitle>
-              <CardDescription>
+          <Card className="relative overflow-hidden border-2 border-primary/30 bg-card shadow-lg ring-1 ring-primary/20">
+            <div className="h-1.5 w-full bg-gradient-to-r from-primary via-indigo-500 to-purple-500" />
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base font-bold flex items-center gap-2">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Sparkles className="h-4 w-4" />
+                  </span>
+                  Apply to this campaign
+                </CardTitle>
+                {!isDeadlinePassed && !existingApplication && (
+                  <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[11px] font-semibold">
+                    ⚡ Open Now
+                  </Badge>
+                )}
+              </div>
+              <CardDescription className="text-xs pt-1">
                 Write a pitch explaining why you&apos;re the right fit.
               </CardDescription>
             </CardHeader>
