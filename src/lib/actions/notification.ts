@@ -86,3 +86,28 @@ export async function markAllAsRead() {
 
   revalidatePath("/notifications");
 }
+
+import { NotificationType } from "@prisma/client";
+
+// ─── Create notification ─────────────────────────────────────────
+
+export async function createNotification(input: {
+  userId: string;
+  type: NotificationType;
+  title: string;
+  body?: string;
+  referenceId?: string;
+  referenceType?: string;
+}) {
+  return prisma.notification.create({
+    data: {
+      userId: input.userId,
+      type: input.type,
+      title: input.title,
+      body: input.body,
+      referenceId: input.referenceId,
+      referenceType: input.referenceType,
+    },
+  });
+}
+

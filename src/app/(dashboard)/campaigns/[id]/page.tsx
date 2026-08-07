@@ -373,6 +373,7 @@ export default async function CampaignDetailPage({ params }: Props) {
           {campaign.brandProfile?.userId && isCreator && (
             <MessageUserButton
               userId={campaign.brandProfile.userId}
+              campaignId={id}
               label="Message Brand"
               className="w-full"
             />
