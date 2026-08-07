@@ -10,6 +10,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+        pink: "bg-[#E60067] text-white shadow hover:bg-[#FF0066]",
+        pinkPill: "bg-[#E60067] text-white font-bold rounded-full shadow hover:bg-[#FF0066] hover:scale-[1.02] transition-all",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:

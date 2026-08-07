@@ -1,31 +1,39 @@
 import Link from "next/link";
-import { Calendar, Users, DollarSign } from "lucide-react";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Calendar, Users, DollarSign, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CampaignStatusBadge } from "@/components/campaigns/campaign-status-badge";
-import { DeliverableBadge } from "@/components/campaigns/deliverable-badge";
+import { DELIVERABLE_TYPE_LABELS, getCurrencySymbol } from "@/lib/validations/campaign";
 
 function fmtBudget(minCents?: number | null, maxCents?: number | null, currency = "USD") {
+  const sym = getCurrencySymbol(currency);
   const fmt = (n: number) => {
     const dollars = n / 100;
-    if (dollars >= 1000) return `$${(dollars / 1000).toFixed(0)}K`;
-    return `$${dollars.toFixed(0)}`;
+    if (dollars >= 1000) return `${sym}${(dollars / 1000).toFixed(0)}K`;
+    return `${sym}${dollars.toLocaleString()}`;
   };
   if (!minCents && !maxCents) return null;
-  if (minCents && maxCents) return `${fmt(minCents)} – ${fmt(maxCents)} ${currency}`;
-  if (maxCents) return `Up to ${fmt(maxCents)} ${currency}`;
-  return `From ${fmt(minCents!)} ${currency}`;
+  if (minCents && maxCents) return `${fmt(minCents)} – ${fmt(maxCents)}`;
+  if (maxCents) return `Up to ${fmt(maxCents)}`;
+  return `From ${fmt(minCents!)}`;
 }
 
 function fmtDeadline(date?: Date | string | null) {
-  if (!date) return null;
+  if (!date) return "No deadline";
   const d = new Date(date);
-  const diff = Math.ceil((d.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-  if (diff < 0)  return "Deadline passed";
-  if (diff === 0) return "Deadline today";
-  if (diff <= 7)  return `${diff}d left`;
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function fmtFollowerRange(min?: number | null, max?: number | null) {
+  const fmt = (n: number) => {
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(0)}M`;
+    if (n >= 1_000) return `${(n / 1_000).toFixed(0)}k`;
+    return n.toString();
+  };
+  if (min && max) return `${fmt(min)}-${fmt(max)}`;
+  if (min) return `>${fmt(min)}`;
+  if (max) return `<${fmt(max)}`;
+  return "Any";
 }
 
 interface CampaignCardProps {
@@ -40,8 +48,13 @@ interface CampaignCardProps {
     budgetMinCents?:  number | null;
     budgetMaxCents?:  number | null;
     currency:         string;
+    country?:         string[];
+    minFollowers?:    number | null;
+    maxFollowers?:    number | null;
     applicationDeadline?: Date | string | null;
+    createdAt?:       Date | string | null;
     isFeatured:       boolean;
+    coverImage?:      string | null;
     brandProfile?: {
       companyName?: string | null;
       logo?:        string | null;
@@ -50,7 +63,6 @@ interface CampaignCardProps {
     } | null;
     _count?: { applications: number };
   };
-  /** "discover" = public view, "manage" = brand management view */
   variant?: "discover" | "manage";
   showStatus?: boolean;
 }
@@ -61,106 +73,96 @@ export function CampaignCard({ campaign, variant = "discover", showStatus = fals
     : `/campaigns/${campaign.id}`;
 
   const budget = fmtBudget(campaign.budgetMinCents, campaign.budgetMaxCents, campaign.currency);
-  const deadline = fmtDeadline(campaign.applicationDeadline);
-  const isUrgent = campaign.applicationDeadline &&
-    Math.ceil((new Date(campaign.applicationDeadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)) <= 3;
+  const deadlineStr = fmtDeadline(campaign.applicationDeadline);
+  const deliverableLabel = `${campaign.deliverableCount} x ${DELIVERABLE_TYPE_LABELS[campaign.deliverableType] || campaign.deliverableType}`;
+  const followerRangeStr = fmtFollowerRange(campaign.minFollowers, campaign.maxFollowers);
+  const targetCountryStr = campaign.country && campaign.country.length > 0 ? campaign.country[0] : "Any";
+
+  // Fallback high-quality cover photo if coverImage is empty
+  const defaultCover = "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&auto=format&fit=crop&q=80";
 
   return (
-    <Card className="group flex flex-col hover:border-primary/50 transition-colors">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 min-w-0">
-            {/* Brand info */}
-            {campaign.brandProfile && (
-              <div className="mb-2 flex items-center gap-2">
-                {campaign.brandProfile.logo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={campaign.brandProfile.logo}
-                    alt={campaign.brandProfile.companyName ?? "Brand"}
-                    className="h-5 w-5 rounded object-cover"
-                  />
-                ) : (
-                  <div className="h-5 w-5 rounded bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground">
-                    {campaign.brandProfile.companyName?.[0] ?? "B"}
-                  </div>
-                )}
-                <span className="text-xs text-muted-foreground truncate">
-                  {campaign.brandProfile.companyName ?? "Brand"}
-                </span>
-                {campaign.brandProfile.isVerified && (
-                  <span className="text-xs text-sky-600">✓</span>
-                )}
-              </div>
-            )}
-            {/* Title */}
-            <Link href={href} className="block">
-              <h3 className="font-semibold text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
-                {campaign.title}
-              </h3>
-            </Link>
-          </div>
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-[#0F0F10] p-3.5 shadow-xl transition-all duration-300 hover:border-neutral-700 hover:shadow-2xl">
+      {/* ── Top Cover Image Banner ── */}
+      <div className="relative h-44 w-full overflow-hidden rounded-xl bg-neutral-900">
+        <img
+          src={campaign.coverImage || campaign.brandProfile?.logo || defaultCover}
+          alt={campaign.title}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
 
-          <div className="flex flex-col items-end gap-1 shrink-0">
-            {campaign.isFeatured && (
-              <Badge variant="default" className="text-[10px]">Featured</Badge>
-            )}
-            {showStatus && <CampaignStatusBadge status={campaign.status} />}
-          </div>
+        {/* Featured / Status Badge */}
+        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+          {campaign.isFeatured && (
+            <span className="rounded-full bg-[#E60067] px-2.5 py-0.5 text-[10px] font-bold text-white shadow-md">
+              ★ Featured
+            </span>
+          )}
+          {showStatus && <CampaignStatusBadge status={campaign.status} />}
+        </div>
+      </div>
+
+      {/* ── Content Details ── */}
+      <div className="mt-3 flex flex-1 flex-col space-y-3">
+        {/* Title */}
+        <Link href={href}>
+          <h3 className="text-base font-bold text-white transition-colors group-hover:text-[#FF0066] line-clamp-1">
+            {campaign.title}
+          </h3>
+        </Link>
+
+        {/* Timeline Row */}
+        <div className="flex items-center justify-between text-[11px] text-neutral-400 font-medium">
+          <span>{campaign.brandProfile?.companyName || "Brand"}</span>
+          <span>Last day on {deadlineStr}</span>
         </div>
 
-        {/* Description snippet */}
-        <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+        {/* Vibrant Green Deliverable Badge */}
+        <div className="pt-0.5">
+          <span className="inline-flex rounded-full bg-[#00E639] px-3.5 py-1 text-xs font-bold text-black shadow-md">
+            {deliverableLabel}
+          </span>
+        </div>
+
+        {/* Short Description */}
+        <p className="text-xs text-neutral-300 line-clamp-2 leading-relaxed">
           {campaign.description}
         </p>
-      </CardHeader>
 
-      <CardContent className="pb-3 flex-1">
-        {/* Niches */}
-        <div className="flex flex-wrap gap-1 mb-3">
-          {campaign.niche.slice(0, 3).map((n) => (
-            <span key={n} className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground border">
-              {n}
-            </span>
-          ))}
-          {campaign.niche.length > 3 && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground border">
-              +{campaign.niche.length - 3}
-            </span>
-          )}
+        {/* ── Specs Pill Container (Matching Figma 4-Column Layout) ── */}
+        <div className="mt-auto rounded-xl bg-neutral-900/90 p-2.5 border border-neutral-800/80">
+          <div className="grid grid-cols-4 divide-x divide-neutral-800 text-center text-[10px]">
+            <div className="px-1">
+              <span className="block text-neutral-500 font-medium">Gender</span>
+              <span className="block font-bold text-white truncate mt-0.5">Any</span>
+            </div>
+            <div className="px-1">
+              <span className="block text-neutral-500 font-medium">Followers</span>
+              <span className="block font-bold text-white truncate mt-0.5">{followerRangeStr}</span>
+            </div>
+            <div className="px-1">
+              <span className="block text-neutral-500 font-medium">Budget</span>
+              <span className="block font-bold text-[#00E639] truncate mt-0.5">{budget || "Collab"}</span>
+            </div>
+            <div className="px-1">
+              <span className="block text-neutral-500 font-medium">Country</span>
+              <span className="block font-bold text-white truncate mt-0.5">{targetCountryStr}</span>
+            </div>
+          </div>
         </div>
 
-        {/* Meta row */}
-        <div className="space-y-1.5">
-          <DeliverableBadge type={campaign.deliverableType} count={campaign.deliverableCount} />
-          {budget && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <DollarSign className="h-3 w-3" />
-              <span>{budget}</span>
-            </div>
-          )}
-          {campaign._count && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Users className="h-3 w-3" />
-              <span>{campaign._count.applications} application{campaign._count.applications !== 1 ? "s" : ""}</span>
-            </div>
-          )}
-          {deadline && (
-            <div className={`flex items-center gap-1.5 text-xs ${isUrgent ? "text-destructive font-medium" : "text-muted-foreground"}`}>
-              <Calendar className="h-3 w-3" />
-              <span>{deadline}</span>
-            </div>
-          )}
-        </div>
-      </CardContent>
-
-      <CardFooter className="pt-0">
-        <Button asChild size="sm" className="w-full" variant={variant === "manage" ? "outline" : "default"}>
-          <Link href={href}>
-            {variant === "manage" ? "View Campaign" : "View & Apply"}
+        {/* ── Hot Pink Action Button ── */}
+        <div className="pt-1">
+          <Link
+            href={href}
+            className="flex w-full items-center justify-center rounded-full bg-[#E60067] py-2.5 text-xs font-bold text-white shadow-md transition-all duration-200 hover:bg-[#FF0066] hover:scale-[1.02]"
+          >
+            {variant === "manage" ? "Manage Campaign" : "View and Apply"}
           </Link>
-        </Button>
-      </CardFooter>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
 }
+
