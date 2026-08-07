@@ -5,6 +5,11 @@ import { Providers } from "@/components/shared/providers";
 export const metadata: Metadata = {
   title: "Brridge – Beyond your DM",
   description: "Get discovered for your influence, find brand deals & co-create on Brridge.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
