@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { CampaignForm } from "@/components/campaigns/campaign-form";
 import { BackButton } from "@/components/shared/back-button";
 
-export const metadata = { title: "New Campaign – Content Creators Hub" };
+export const metadata = { title: "New Campaign – Brridge" };
 
 export default async function NewCampaignPage() {
   const user = await requireRole(["BRAND", "ADMIN"]);

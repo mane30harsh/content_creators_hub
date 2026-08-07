@@ -14,7 +14,7 @@ function fmtDate(d?: Date | string | null) {
   return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-export const metadata = { title: "My Applications – Content Creators Hub" };
+export const metadata = { title: "My Applications – Brridge" };
 
 export default async function CreatorCampaignsPage() {
   await requireRole(["CREATOR", "ADMIN"]);

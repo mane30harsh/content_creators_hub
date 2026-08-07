@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Terms of Service – Content Creators Hub",
-  description: "Terms and conditions for using Content Creators Hub.",
+  title: "Terms of Service – Brridge",
+  description: "Terms and conditions for using Brridge.",
 };
 
 export default function TermsPage() {
@@ -17,7 +17,7 @@ export default function TermsPage() {
           <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
             C
           </span>
-          Content Creators Hub
+          Brridge
         </Link>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" asChild>
@@ -54,14 +54,14 @@ export default function TermsPage() {
           <section className="space-y-3">
             <h2 className="text-xl font-semibold text-foreground">1. Acceptance of Terms</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              By creating an account or accessing Content Creators Hub (&quot;Platform&quot;), you agree to be bound by these Terms of Service. If you do not agree to all terms, you may not access or use our services.
+              By creating an account or accessing Brridge (&quot;Platform&quot;), you agree to be bound by these Terms of Service. If you do not agree to all terms, you may not access or use our services.
             </p>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-xl font-semibold text-foreground">2. User Roles & Account Registration</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Content Creators Hub offers accounts for Creators and Brands. Users must provide accurate, complete information during registration and keep account details updated. You are responsible for safeguarding your account credentials.
+              Brridge offers accounts for Creators and Brands. Users must provide accurate, complete information during registration and keep account details updated. You are responsible for safeguarding your account credentials.
             </p>
             <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
               <li><strong>Creators:</strong> Must provide accurate portfolio items, audience metrics, and contact details.</li>
@@ -93,7 +93,7 @@ export default function TermsPage() {
           <section className="space-y-3">
             <h2 className="text-xl font-semibold text-foreground">6. Limitation of Liability</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Content Creators Hub is provided &quot;as is&quot; without warranties of any kind. We are not liable for direct, indirect, incidental, or consequential damages resulting from your use of the Platform.
+              Brridge is provided &quot;as is&quot; without warranties of any kind. We are not liable for direct, indirect, incidental, or consequential damages resulting from your use of the Platform.
             </p>
           </section>
 

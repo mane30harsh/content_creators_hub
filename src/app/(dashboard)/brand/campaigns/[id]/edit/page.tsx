@@ -6,7 +6,7 @@ import { getBrandCampaignDetail } from "@/lib/actions/campaign";
 import { CampaignForm } from "@/components/campaigns/campaign-form";
 import { fromCents } from "@/lib/validations/campaign";
 
-export const metadata = { title: "Edit Campaign – Content Creators Hub" };
+export const metadata = { title: "Edit Campaign – Brridge" };
 
 interface Props {
   params: Promise<{ id: string }>;

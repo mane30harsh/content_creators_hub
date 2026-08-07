@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Lock } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy – Content Creators Hub",
-  description: "Privacy policy and data handling guidelines for Content Creators Hub.",
+  title: "Privacy Policy – Brridge",
+  description: "Privacy policy and data handling guidelines for Brridge.",
 };
 
 export default function PrivacyPage() {
@@ -17,7 +17,7 @@ export default function PrivacyPage() {
           <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
             C
           </span>
-          Content Creators Hub
+          Brridge
         </Link>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" asChild>
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
           <section className="space-y-3">
             <h2 className="text-xl font-semibold text-foreground">1. Information We Collect</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              We collect information you provide directly to us when creating an account, building a profile, or communicating on Content Creators Hub:
+              We collect information you provide directly to us when creating an account, building a profile, or communicating on Brridge:
             </p>
             <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
               <li><strong>Account Details:</strong> Name, email address, password, role (Creator or Brand), and country.</li>

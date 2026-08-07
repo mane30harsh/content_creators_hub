@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CampaignStatusBadge } from "@/components/campaigns/campaign-status-badge";
 
-export const metadata = { title: "My Campaigns – Content Creators Hub" };
+export const metadata = { title: "My Campaigns – Brridge" };
 
 export default async function BrandCampaignsPage() {
   await requireRole(["BRAND", "ADMIN"]);

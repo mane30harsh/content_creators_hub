@@ -29,7 +29,7 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Account Settings – Content Creators Hub",
+  title: "Account Settings – Brridge",
   description: "Manage your account, security, and notification preferences.",
 };
 

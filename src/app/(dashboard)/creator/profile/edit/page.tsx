@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { ProfileEditForm } from "./profile-edit-form";
 import { BackButton } from "@/components/shared/back-button";
 
-export const metadata = { title: "Edit Profile – Content Creators Hub" };
+export const metadata = { title: "Edit Profile – Brridge" };
 
 export default async function ProfileEditPage() {
   const user = await requireRole(["CREATOR", "ADMIN"]);

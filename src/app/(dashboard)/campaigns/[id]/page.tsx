@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const campaign = await getPublicCampaignDetail(id);
   if (!campaign) return { title: "Campaign Not Found" };
-  return { title: `${campaign.title} – Content Creators Hub` };
+  return { title: `${campaign.title} – Brridge` };
 }
 
 export default async function CampaignDetailPage({ params }: Props) {

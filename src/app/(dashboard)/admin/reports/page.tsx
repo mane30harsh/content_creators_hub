@@ -5,7 +5,7 @@ import { AdminReportsClient } from "./reports-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Reports – Admin – Content Creators Hub",
+  title: "Reports – Admin – Brridge",
 };
 
 interface Props {

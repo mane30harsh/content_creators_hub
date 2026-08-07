@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPost(id);
   if (!post) return { title: "Post not found" };
   return {
-    title: `${post.title ?? "Post"} – Content Creators Hub`,
+    title: `${post.title ?? "Post"} – Brridge`,
     description: post.body.slice(0, 160),
   };
 }

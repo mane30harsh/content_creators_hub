@@ -5,7 +5,7 @@ import { AdminCampaignsClient } from "./campaigns-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Manage Campaigns – Admin – Content Creators Hub",
+  title: "Manage Campaigns – Admin – Brridge",
 };
 
 interface Props {

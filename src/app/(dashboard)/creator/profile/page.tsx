@@ -35,7 +35,7 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "My Profile – Content Creators Hub",
+  title: "My Profile – Brridge",
   description: "Manage your creator profile and portfolio.",
 };
 

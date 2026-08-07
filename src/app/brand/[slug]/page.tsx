@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const brand = await getBrand(slug);
   if (!brand) return { title: "Brand not found" };
   return {
-    title: `${brand.companyName ?? slug} – Content Creators Hub`,
+    title: `${brand.companyName ?? slug} – Brridge`,
     description: brand.tagline ?? brand.bio ?? undefined,
   };
 }

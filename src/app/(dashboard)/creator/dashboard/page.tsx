@@ -21,7 +21,7 @@ import {
   Briefcase,
 } from "lucide-react";
 
-export const metadata = { title: "Creator Dashboard – Content Creators Hub" };
+export const metadata = { title: "Creator Dashboard – Brridge" };
 
 function fmtFollowers(n: number | null | undefined): string {
   if (!n) return "–";

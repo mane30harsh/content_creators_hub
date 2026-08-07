@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard – Content Creators Hub",
+  title: "Admin Dashboard – Brridge",
 };
 
 export default async function AdminDashboardPage() {

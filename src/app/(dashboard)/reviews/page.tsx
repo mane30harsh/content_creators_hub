@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MessageSquareText, Inbox } from "lucide-react";
 import { BackButton } from "@/components/shared/back-button";
 
-export const metadata = { title: "Reviews – Content Creators Hub" };
+export const metadata = { title: "Reviews – Brridge" };
 
 export default async function ReviewsPage() {
   const { asBrand, asCreator } = await getCompletedCampaignsForReview();

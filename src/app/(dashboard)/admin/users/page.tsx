@@ -5,7 +5,7 @@ import { AdminUsersClient } from "./users-client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Manage Users – Admin – Content Creators Hub",
+  title: "Manage Users – Admin – Brridge",
 };
 
 interface Props {

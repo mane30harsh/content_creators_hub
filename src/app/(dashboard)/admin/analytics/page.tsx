@@ -5,7 +5,7 @@ import { TrendingUp, Users, Briefcase, FileText, Activity, Clock } from "lucide-
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Analytics – Admin – Content Creators Hub",
+  title: "Analytics – Admin – Brridge",
 };
 
 export default async function AdminAnalyticsPage() {

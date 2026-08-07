@@ -5,7 +5,7 @@ import { KeyRound } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Reset Password – Content Creators Hub",
+  title: "Reset Password – Brridge",
 };
 
 export default function ForgotPasswordPage() {

@@ -11,7 +11,7 @@ import { BackButton } from "@/components/shared/back-button";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Edit Brand Profile – Content Creators Hub",
+  title: "Edit Brand Profile – Brridge",
 };
 
 export default async function BrandProfileEditPage() {

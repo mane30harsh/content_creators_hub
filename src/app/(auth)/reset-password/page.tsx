@@ -5,7 +5,7 @@ import { ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Set New Password – Content Creators Hub",
+  title: "Set New Password – Brridge",
 };
 
 export default async function ResetPasswordPage({

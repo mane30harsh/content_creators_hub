@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props) {
   await requireRole(["BRAND", "ADMIN"]);
   const campaign = await getBrandCampaignDetail(id);
   if (!campaign) return { title: "Campaign Not Found" };
-  return { title: `${campaign.title} – Content Creators Hub` };
+  return { title: `${campaign.title} – Brridge` };
 }
 
 export default async function BrandCampaignDetailPage({ params }: Props) {

@@ -5,7 +5,7 @@ import { BrandOnboardingForm } from "./brand-onboarding-form";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Set Up Your Brand – Content Creators Hub",
+  title: "Set Up Your Brand – Brridge",
 };
 
 export default async function BrandOnboardingPage() {
@@ -30,7 +30,7 @@ export default async function BrandOnboardingPage() {
           <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground text-2xl font-bold shadow-lg">
             B
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">Welcome to Content Creators Hub</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Welcome to Brridge</h1>
           <p className="mt-3 text-muted-foreground">
             Tell us about your brand so creators can discover and connect with you.
           </p>

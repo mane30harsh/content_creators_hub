@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const creator = await getCreator(username);
   if (!creator) return { title: "Creator not found" };
   return {
-    title: `${creator.displayName ?? creator.username} – Content Creators Hub`,
+    title: `${creator.displayName ?? creator.username} – Brridge`,
     description: creator.bio ?? undefined,
   };
 }

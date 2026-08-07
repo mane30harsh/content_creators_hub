@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { isAppRole, ROLE_HOME } from "@/lib/roles";
 import { UserNav } from "@/components/shared/user-nav";
 import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
+import { BrridgeLogo } from "@/components/shared/brridge-logo";
 
 export default async function DashboardLayout({
   children,
@@ -54,14 +55,8 @@ export default async function DashboardLayout({
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
           <div className="flex items-center gap-6">
-            <Link
-              href={roleHome}
-              className="flex items-center gap-2 font-semibold tracking-tight"
-            >
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
-                C
-              </span>
-              <span className="hidden sm:inline">Content Creators Hub</span>
+            <Link href={roleHome} className="flex items-center gap-2">
+              <BrridgeLogo />
             </Link>
 
             <nav className="hidden items-center gap-1 sm:flex">

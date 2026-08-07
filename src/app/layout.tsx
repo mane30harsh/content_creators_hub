@@ -3,8 +3,8 @@ import "./globals.css";
 import { Providers } from "@/components/shared/providers";
 
 export const metadata: Metadata = {
-  title: "Content Creators Hub",
-  description: "Connecting creators and brands.",
+  title: "Brridge – Beyond your DM",
+  description: "Get discovered for your influence, find brand deals & co-create on Brridge.",
 };
 
 export default function RootLayout({

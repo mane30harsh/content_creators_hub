@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { isAppRole, ROLE_HOME } from "@/lib/roles";
 
+import { BrridgeLogo } from "@/components/shared/brridge-logo";
+
 export default async function AuthLayout({
   children,
 }: {
@@ -18,14 +20,8 @@ export default async function AuthLayout({
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-muted/40 to-background">
       {/* Minimal header */}
       <header className="flex h-14 items-center border-b border-border bg-background/80 px-6 backdrop-blur">
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-semibold tracking-tight"
-        >
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
-            C
-          </span>
-          <span>Content Creators Hub</span>
+        <Link href="/" className="flex items-center gap-2">
+          <BrridgeLogo />
         </Link>
       </header>
 
@@ -36,7 +32,7 @@ export default async function AuthLayout({
 
       {/* Footer */}
       <footer className="border-t border-border py-4 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Content Creators Hub · All rights reserved
+        © {new Date().getFullYear()} Brridge · All rights reserved
       </footer>
     </div>
   );

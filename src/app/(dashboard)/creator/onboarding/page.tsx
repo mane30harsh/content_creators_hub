@@ -3,7 +3,7 @@ import { requireRole } from "@/lib/auth/guards";
 import { prisma } from "@/lib/prisma";
 import { OnboardingForm } from "./onboarding-form";
 
-export const metadata = { title: "Complete Your Profile – Content Creators Hub" };
+export const metadata = { title: "Complete Your Profile – Brridge" };
 
 export default async function OnboardingPage() {
   const user = await requireRole(["CREATOR", "ADMIN"]);

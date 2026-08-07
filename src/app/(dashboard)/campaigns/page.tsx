@@ -8,7 +8,7 @@ import { DELIVERABLE_TYPE_LABELS } from "@/lib/validations/campaign";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export const metadata = { title: "Browse Campaigns – Content Creators Hub" };
+export const metadata = { title: "Browse Campaigns – Brridge" };
 
 interface PageProps {
   searchParams: Promise<{

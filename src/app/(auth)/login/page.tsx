@@ -6,7 +6,7 @@ import { LockKeyhole } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sign In – Content Creators Hub",
+  title: "Sign In – Brridge",
 };
 
 export default function LoginPage() {

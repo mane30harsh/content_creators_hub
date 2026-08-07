@@ -15,7 +15,7 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Brand Dashboard – Content Creators Hub",
+  title: "Brand Dashboard – Brridge",
 };
 
 function fmtMoney(cents: number) {

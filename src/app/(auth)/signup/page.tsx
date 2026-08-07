@@ -4,7 +4,7 @@ import { RegisterForm } from "@/components/forms/register-form";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Create Account – Content Creators Hub",
+  title: "Create Account – Brridge",
 };
 
 export default function SignupPage() {
