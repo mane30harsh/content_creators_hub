@@ -24,6 +24,12 @@ const config: Config = {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
+        brridge: {
+          pink: "#E60067",
+          "pink-hover": "#FF0066",
+          green: "#00E639",
+          yellow: "#EAB308",
+        },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
