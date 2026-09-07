@@ -1,14 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
-import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
+import { Search, Bell, SlidersHorizontal } from "lucide-react";
 
 interface CreatorSearchHeaderProps {
   onSearch?: (query: string) => void;
+  onToggleNotifications?: () => void;
+  showNotifications?: boolean;
+  unreadCount?: number;
 }
 
-export function CreatorSearchHeader({ onSearch }: CreatorSearchHeaderProps) {
+export function CreatorSearchHeader({
+  onSearch,
+  onToggleNotifications,
+  showNotifications = false,
+  unreadCount = 3,
+}: CreatorSearchHeaderProps) {
   const [query, setQuery] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +42,20 @@ export function CreatorSearchHeader({ onSearch }: CreatorSearchHeaderProps) {
 
       {/* ── Right Icons ── */}
       <div className="flex items-center gap-3">
-        <NotificationDropdown />
+        <button
+          onClick={onToggleNotifications}
+          className={`relative flex h-10 w-10 items-center justify-center rounded-full transition-all ${
+            showNotifications
+              ? "bg-[#FF007A] text-white shadow-lg shadow-[#FF007A]/30"
+              : "border border-neutral-800 bg-[#121216] text-neutral-300 hover:border-neutral-700 hover:text-white"
+          }`}
+          title="Notifications"
+        >
+          <Bell className="h-4 w-4" />
+          {!showNotifications && unreadCount > 0 && (
+            <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#FF007A] ring-2 ring-[#121216]" />
+          )}
+        </button>
         <button
           className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-800 bg-[#121216] text-neutral-300 hover:border-neutral-700 hover:text-white transition-all"
           title="Filter options"

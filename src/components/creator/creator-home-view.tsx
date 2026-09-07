@@ -6,6 +6,7 @@ import { CreatorSearchHeader } from "./creator-search-header";
 import { CategoryPills } from "./category-pills";
 import { CreatorFeedCard } from "./creator-feed-card";
 import { CreatorSuggestions } from "./creator-suggestions";
+import { CreatorNotificationsView } from "./creator-notifications-view";
 
 interface CreatorHomeViewProps {
   user: {
@@ -42,6 +43,7 @@ interface CreatorHomeViewProps {
     type: "brand" | "community";
     slug?: string;
   }>;
+  initialTab?: "feed" | "notifications";
 }
 
 export function CreatorHomeView({
@@ -50,7 +52,9 @@ export function CreatorHomeView({
   savedCampaignIds,
   appliedCampaignIds,
   suggestions,
+  initialTab = "feed",
 }: CreatorHomeViewProps) {
+  const [showNotifications, setShowNotifications] = useState(initialTab === "notifications");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>("Food");
 
@@ -85,39 +89,51 @@ export function CreatorHomeView({
       {/* ── Left Navigation Sidebar ── */}
       <CreatorSidebar user={user} />
 
-      {/* ── Center Main Feed ── */}
+      {/* ── Center Main Content Column ── */}
       <main className="flex-1 max-w-4xl px-8 py-6 space-y-6 overflow-y-auto no-scrollbar border-r border-neutral-900/60">
-        {/* Search Header */}
-        <CreatorSearchHeader onSearch={setSearchQuery} />
+        {showNotifications ? (
+          <CreatorNotificationsView
+            onCloseNotifications={() => setShowNotifications(false)}
+          />
+        ) : (
+          <>
+            {/* Search Header */}
+            <CreatorSearchHeader
+              onSearch={setSearchQuery}
+              onToggleNotifications={() => setShowNotifications(true)}
+              showNotifications={showNotifications}
+            />
 
-        {/* Category Pills Bar */}
-        <CategoryPills
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
+            {/* Category Pills Bar */}
+            <CategoryPills
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+            />
 
-        {/* Feed Cards Section */}
-        <div className="space-y-6 pt-2">
-          {filteredCampaigns.length === 0 ? (
-            <div className="rounded-3xl border border-neutral-800/80 bg-[#101014] p-12 text-center text-neutral-400">
-              <p className="text-base font-semibold text-white">No campaigns found</p>
-              <p className="mt-1 text-sm text-neutral-500">
-                Try resetting your search or selecting a different category filter.
-              </p>
+            {/* Feed Cards Section */}
+            <div className="space-y-6 pt-2">
+              {filteredCampaigns.length === 0 ? (
+                <div className="rounded-3xl border border-neutral-800/80 bg-[#101014] p-12 text-center text-neutral-400">
+                  <p className="text-base font-semibold text-white">No campaigns found</p>
+                  <p className="mt-1 text-sm text-neutral-500">
+                    Try resetting your search or selecting a different category filter.
+                  </p>
+                </div>
+              ) : (
+                filteredCampaigns.map((c) => (
+                  <CreatorFeedCard
+                    key={c.id}
+                    campaign={{
+                      ...c,
+                      isSaved: savedSet.has(c.id),
+                      isApplied: appliedSet.has(c.id),
+                    }}
+                  />
+                ))
+              )}
             </div>
-          ) : (
-            filteredCampaigns.map((c) => (
-              <CreatorFeedCard
-                key={c.id}
-                campaign={{
-                  ...c,
-                  isSaved: savedSet.has(c.id),
-                  isApplied: appliedSet.has(c.id),
-                }}
-              />
-            ))
-          )}
-        </div>
+          </>
+        )}
       </main>
 
       {/* ── Right Sidebar Suggestions ── */}
