@@ -9,7 +9,8 @@ export function DashboardHeaderWrapper({ children }: { children: React.ReactNode
   if (
     pathname === "/creator/dashboard" ||
     pathname === "/creator" ||
-    pathname === "/community"
+    pathname === "/community" ||
+    pathname === "/messages"
   ) {
     return null;
   }
