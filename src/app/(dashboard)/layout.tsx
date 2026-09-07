@@ -6,6 +6,8 @@ import { UserNav } from "@/components/shared/user-nav";
 import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
 import { BrridgeLogo } from "@/components/shared/brridge-logo";
 
+import { DashboardHeaderWrapper } from "@/components/shared/dashboard-header-wrapper";
+
 export default async function DashboardLayout({
   children,
 }: {
@@ -52,37 +54,39 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-          <div className="flex items-center gap-6">
-            <Link href={roleHome} className="flex items-center gap-2">
-              <BrridgeLogo />
-            </Link>
+      <DashboardHeaderWrapper>
+        <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
+            <div className="flex items-center gap-6">
+              <Link href={roleHome} className="flex items-center gap-2">
+                <BrridgeLogo />
+              </Link>
 
-            <nav className="hidden items-center gap-1 sm:flex">
-              {navLinks.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                >
-                  {label}
-                </Link>
-              ))}
-            </nav>
-          </div>
+              <nav className="hidden items-center gap-1 sm:flex">
+                {navLinks.map(({ href, label }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
 
-          <div className="flex items-center gap-1">
-            <NotificationDropdown />
-            <UserNav
-              name={session.user.name ?? undefined}
-              email={session.user.email ?? undefined}
-              image={session.user.image ?? undefined}
-              role={isAppRole(role) ? role : "CREATOR"}
-            />
+            <div className="flex items-center gap-1">
+              <NotificationDropdown />
+              <UserNav
+                name={session.user.name ?? undefined}
+                email={session.user.email ?? undefined}
+                image={session.user.image ?? undefined}
+                role={isAppRole(role) ? role : "CREATOR"}
+              />
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      </DashboardHeaderWrapper>
 
       <div className="flex-1">{children}</div>
     </div>
