@@ -44,7 +44,7 @@ export function CreatorSidebar({ user }: CreatorSidebarProps) {
     },
     {
       label: "Community",
-      href: "/feed",
+      href: "/community",
       icon: Users,
     },
     {
@@ -83,6 +83,8 @@ export function CreatorSidebar({ user }: CreatorSidebarProps) {
           const Icon = item.icon;
           const isActive = item.exact
             ? pathname === item.href
+            : item.href === "/community"
+            ? pathname.startsWith("/community") || pathname.startsWith("/feed")
             : pathname.startsWith(item.href);
 
           if (item.isProfile) {
