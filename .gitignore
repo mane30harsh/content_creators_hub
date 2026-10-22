@@ -42,3 +42,10 @@ next-env.d.ts
 !.vscode/extensions.json
 .idea
 public/uploads/
+
+# local tooling / secrets
+.agents/mcp.json
+extract_styles.mjs
+fetch_figma.mjs
+figma_extracted_styles.txt
+figma_node.json

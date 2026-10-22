@@ -3,20 +3,13 @@
 import Link from "next/link";
 import { Star } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-interface SuggestionItem {
-  id: string;
-  name: string;
-  avatar?: string | null;
-  type: "brand" | "community";
-  slug?: string;
-}
+import type { CreatorSuggestionItem } from "@/lib/creator-suggestions";
 
 interface CreatorSuggestionsProps {
-  suggestions?: SuggestionItem[];
+  suggestions?: CreatorSuggestionItem[];
 }
 
-const DEFAULT_SUGGESTIONS: SuggestionItem[] = [
+const DEFAULT_SUGGESTIONS: CreatorSuggestionItem[] = [
   {
     id: "s1",
     name: "Offduty India",

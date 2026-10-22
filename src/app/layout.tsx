@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
+import { Host_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/shared/providers";
+
+const hostGrotesk = Host_Grotesk({ subsets: ["latin"], variable: "--font-host-grotesk" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "Brridge – Beyond your DM",
@@ -18,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen antialiased">
+    <html lang="en" suppressHydrationWarning className="dark">
+      <body className={`min-h-screen bg-background text-foreground antialiased ${hostGrotesk.variable} ${inter.variable} font-sans`}>
         <Providers>{children}</Providers>
       </body>
     </html>
