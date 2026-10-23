@@ -75,6 +75,80 @@ export async function getOrCreateThread(input: {
   return { success: true, data: { threadId: newThread.id } };
 }
 
+// ─── Search users to start a new conversation ───────────────────────────────
+
+export async function searchUsers(query: string) {
+  const user = await requireUser();
+  const q = query.trim();
+
+  if (!q) return [];
+
+  const users = await prisma.user.findMany({
+    where: {
+      id: { not: user.id },
+      isActive: true,
+      OR: [
+        { name: { contains: q, mode: "insensitive" } },
+        { email: { contains: q, mode: "insensitive" } },
+        {
+          creatorProfile: {
+            is: {
+              OR: [
+                { displayName: { contains: q, mode: "insensitive" } },
+                { username: { contains: q, mode: "insensitive" } },
+              ],
+            },
+          },
+        },
+        {
+          brandProfile: {
+            is: {
+              OR: [
+                { companyName: { contains: q, mode: "insensitive" } },
+                { slug: { contains: q, mode: "insensitive" } },
+              ],
+            },
+          },
+        },
+      ],
+    },
+    take: 10,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      creatorProfile: {
+        select: { displayName: true, username: true, avatar: true },
+      },
+      brandProfile: {
+        select: { companyName: true, slug: true, logo: true },
+      },
+    },
+  });
+
+  return users.map((result) => {
+    const isBrand = result.role === "BRAND";
+    return {
+      id: result.id,
+      name:
+        (isBrand
+          ? result.brandProfile?.companyName
+          : result.creatorProfile?.displayName) ||
+        result.name ||
+        result.email ||
+        "User",
+      role: result.role,
+      image:
+        (isBrand ? result.brandProfile?.logo : result.creatorProfile?.avatar) ||
+        null,
+      username: isBrand
+        ? result.brandProfile?.slug ?? undefined
+        : result.creatorProfile?.username ?? undefined,
+    };
+  });
+}
+
 // ─── Get all threads for logged-in user ─────────────────────────────────────
 
 export async function getThreads() {

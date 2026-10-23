@@ -14,7 +14,15 @@ const config: Config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-host-grotesk)", "sans-serif"],
+        inter: ["var(--font-inter)", "sans-serif"],
+      },
       colors: {
+        brand: {
+          yellow: "hsl(61 99% 50%)",
+          pink: "hsl(334 99% 50%)",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

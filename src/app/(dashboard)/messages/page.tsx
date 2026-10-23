@@ -7,9 +7,9 @@ import {
   getOrCreateThread,
 } from "@/lib/actions/message";
 import { ChatView } from "@/components/messages/chat-view";
-import { CreatorSidebar } from "@/components/creator/creator-sidebar";
 import { CreatorMessagesView } from "@/components/creator/creator-messages-view";
-import { CreatorSuggestions } from "@/components/creator/creator-suggestions";
+import { CreatorPageShell } from "@/components/creator/creator-page-shell";
+import { getCreatorSuggestions } from "@/lib/creator-suggestions";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -42,40 +42,22 @@ export default async function MessagesPage({ searchParams }: Props) {
       select: { username: true, avatar: true },
     });
 
-    const suggestedBrands = await prisma.brandProfile.findMany({
-      take: 5,
-      select: { id: true, companyName: true, logo: true, slug: true },
-    });
-
-    const suggestions = suggestedBrands.map((b) => ({
-      id: b.id,
-      name: b.companyName || "Brand",
-      avatar: b.logo,
-      type: "brand" as const,
-      slug: b.slug ?? undefined,
-    }));
+    const suggestions = await getCreatorSuggestions();
 
     return (
-      <div className="flex min-h-screen bg-[#070709] text-white">
-        {/* ── Left Navigation Sidebar ── */}
-        <CreatorSidebar
-          user={{
-            name: session.user.name,
-            email: session.user.email,
-            image: session.user.image,
-            username: profile?.username,
-            avatar: profile?.avatar,
-          }}
-        />
-
-        {/* ── Center Main Content ── */}
-        <main className="flex-1 max-w-4xl px-8 py-6 space-y-6 overflow-y-auto no-scrollbar border-r border-neutral-900/60">
-          <CreatorMessagesView />
-        </main>
-
-        {/* ── Right Sidebar Suggestions ── */}
-        <CreatorSuggestions suggestions={suggestions} />
-      </div>
+      <CreatorPageShell
+        user={{
+          name: session.user.name,
+          email: session.user.email,
+          image: session.user.image,
+          username: profile?.username,
+          avatar: profile?.avatar,
+        }}
+        suggestions={suggestions}
+        mainClassName="flex flex-col overflow-hidden"
+      >
+        <CreatorMessagesView />
+      </CreatorPageShell>
     );
   }
 
