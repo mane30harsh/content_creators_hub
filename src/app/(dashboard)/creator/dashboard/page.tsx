@@ -53,30 +53,30 @@ export default async function CreatorDashboardPage() {
       niche: ["Food", "Lifestyle"],
       createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
       coverImage:
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=900&auto=format&fit=crop&q=80",
       brandProfile: {
         companyName: "Gullylabs",
-        logo: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
+        logo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&auto=format&fit=crop&q=80",
         slug: "gullylabs",
       },
     },
     {
       id: "demo-mcdonalds",
-      title: "New Product Launch Campaign",
+      title: "McDonald's Campaign",
       description:
-        "Looking for creators to review and showcase our upcoming summer apparel collection.",
+        "McDonald's is seeking food and lifestyle creators for exciting local menu promotions.",
       deliverableType: "INSTAGRAM_POST",
       deliverableCount: 1,
       minFollowers: 10000,
       maxFollowers: 50000,
       country: ["India"],
-      niche: ["Fashion", "Travel"],
+      niche: ["Food", "Travel"],
       createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
       coverImage:
-        "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=900&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=900&auto=format&fit=crop&q=80",
       brandProfile: {
         companyName: "Mcdonald's",
-        logo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&auto=format&fit=crop&q=80",
+        logo: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=200&auto=format&fit=crop&q=80",
         slug: "mcdonalds",
       },
     },

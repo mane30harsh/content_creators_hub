@@ -14,7 +14,7 @@ export function CreatorSearchHeader({
   onSearch,
   onToggleNotifications,
   showNotifications = false,
-  unreadCount = 3,
+  unreadCount = 1,
 }: CreatorSearchHeaderProps) {
   const [query, setQuery] = useState("");
 
@@ -27,40 +27,38 @@ export function CreatorSearchHeader({
   };
 
   return (
-    <div className="flex items-center justify-between gap-4 py-4">
-      {/* ── Search Input ── */}
-      <div className="relative flex-1 max-w-xl">
+    <div className="flex items-center justify-between gap-4 pb-2 pt-1">
+      {/* ── Search Input (Pill) ── */}
+      <div className="relative flex-1">
         <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
         <input
           type="text"
           value={query}
           onChange={handleChange}
           placeholder="Search anything...."
-          className="w-full rounded-full border border-neutral-800 bg-[#121216] py-2.5 pl-11 pr-4 text-sm text-white placeholder-neutral-500 focus:border-[#FF007A] focus:outline-none focus:ring-1 focus:ring-[#FF007A] transition-all"
+          className="w-full rounded-full border border-neutral-800 bg-[#0F0F13] py-2.5 pl-11 pr-4 text-sm text-white placeholder-neutral-500 focus:border-neutral-700 focus:outline-none transition-all"
         />
       </div>
 
-      {/* ── Right Icons ── */}
-      <div className="flex items-center gap-3">
+      {/* ── Right Icons (Bell & Sliders) ── */}
+      <div className="flex items-center gap-3 shrink-0">
         <button
           onClick={onToggleNotifications}
-          className={`relative flex h-10 w-10 items-center justify-center rounded-full transition-all ${
-            showNotifications
-              ? "bg-[#FF007A] text-white shadow-lg shadow-[#FF007A]/30"
-              : "border border-neutral-800 bg-[#121216] text-neutral-300 hover:border-neutral-700 hover:text-white"
+          className={`relative p-2 text-neutral-300 hover:text-white transition-colors ${
+            showNotifications ? "text-[#FF007A]" : ""
           }`}
           title="Notifications"
         >
-          <Bell className="h-4 w-4" />
-          {!showNotifications && unreadCount > 0 && (
-            <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#FF007A] ring-2 ring-[#121216]" />
+          <Bell className="h-5 w-5" />
+          {unreadCount > 0 && (
+            <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-[#FF007A]" />
           )}
         </button>
         <button
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-800 bg-[#121216] text-neutral-300 hover:border-neutral-700 hover:text-white transition-all"
-          title="Filter options"
+          className="p-2 text-neutral-300 hover:text-white transition-colors"
+          title="Filters"
         >
-          <SlidersHorizontal className="h-4 w-4" />
+          <SlidersHorizontal className="h-5 w-5" />
         </button>
       </div>
     </div>

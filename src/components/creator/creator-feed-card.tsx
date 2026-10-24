@@ -68,7 +68,7 @@ export function CreatorFeedCard({ campaign }: CreatorFeedCardProps) {
   }`;
 
   const defaultCover =
-    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&auto=format&fit=crop&q=80";
+    "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=900&auto=format&fit=crop&q=80";
 
   const handleSaveToggle = async () => {
     try {
@@ -106,21 +106,19 @@ export function CreatorFeedCard({ campaign }: CreatorFeedCardProps) {
   };
 
   return (
-    <article className="overflow-hidden rounded-3xl border border-neutral-800/80 bg-[#101014] p-5 shadow-2xl transition-all hover:border-neutral-700">
+    <article className="overflow-hidden rounded-3xl border border-neutral-800/60 bg-[#0E0E12] p-5 transition-all">
       {/* ── Brand Header ── */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3.5">
         <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10 border border-neutral-800 bg-neutral-900">
+          <Avatar className="h-10 w-10 border border-neutral-800 bg-[#1e293b]">
             <AvatarImage src={brandLogo ?? undefined} />
-            <AvatarFallback className="bg-[#1A1A22] text-sm font-bold text-white">
+            <AvatarFallback className="bg-[#1e40af] text-sm font-bold text-white">
               {brandName.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <div className="flex items-center gap-2">
-              <h4 className="text-base font-bold text-white tracking-tight">{brandName}</h4>
-              <span className="text-xs text-neutral-400 font-medium">· {timeAgo}</span>
-            </div>
+          <div className="flex items-center gap-2">
+            <h4 className="text-base font-bold text-white tracking-tight">{brandName}</h4>
+            <span className="text-xs text-neutral-400 font-medium">· {timeAgo}</span>
           </div>
         </div>
 
@@ -129,78 +127,72 @@ export function CreatorFeedCard({ campaign }: CreatorFeedCardProps) {
         </button>
       </div>
 
-      {/* ── Inner Content Card Box ── */}
-      <div className="rounded-2xl border border-neutral-800/90 bg-[#16161B] p-4 space-y-4">
-        {/* Banner Image */}
-        <div className="relative h-52 w-full overflow-hidden rounded-xl bg-neutral-900">
-          <img
-            src={campaign.coverImage || defaultCover}
-            alt={campaign.title}
-            className="h-full w-full object-cover"
-          />
-        </div>
+      {/* ── Banner Image ── */}
+      <div className="relative h-60 w-full overflow-hidden rounded-2xl bg-neutral-900 mb-4">
+        <img
+          src={campaign.coverImage || defaultCover}
+          alt={campaign.title}
+          className="h-full w-full object-cover"
+        />
+      </div>
 
-        {/* Green Deliverable Badge */}
-        <div>
-          <span className="inline-flex rounded-full bg-[#00E639] px-4 py-1 text-xs font-bold text-black shadow-md">
-            {deliverableText}
-          </span>
-        </div>
+      {/* ── Green Deliverable Badge ── */}
+      <div className="mb-3">
+        <span className="inline-flex rounded-full bg-[#00E639] px-4 py-1.5 text-xs font-bold text-black shadow-sm">
+          {deliverableText}
+        </span>
+      </div>
 
-        {/* Description */}
-        <p className="text-sm leading-relaxed text-neutral-300 font-normal">
-          {campaign.description ||
-            "Seeking food and lifestyle influencers to create engaging content around new offers."}
-        </p>
+      {/* ── Description ── */}
+      <p className="text-sm leading-relaxed text-neutral-200 font-normal mb-4">
+        {campaign.description ||
+          "McDonald's is seeking food and lifestyle influencers to create engaging content around new offers."}
+      </p>
 
-        {/* Specs Box */}
-        <div className="rounded-xl border border-neutral-800/80 bg-[#0C0C0F] p-3">
-          <div className="grid grid-cols-4 divide-x divide-neutral-800/80 text-center text-xs">
-            <div className="px-1">
-              <span className="block text-[11px] text-neutral-500 font-medium">Gender</span>
-              <span className="block font-bold text-white mt-1">Any</span>
-            </div>
-            <div className="px-1">
-              <span className="block text-[11px] text-neutral-500 font-medium">Followers</span>
-              <span className="block font-bold text-white mt-1">
-                {fmtFollowerRange(campaign.minFollowers, campaign.maxFollowers)}
-              </span>
-            </div>
-            <div className="px-1">
-              <span className="block text-[11px] text-neutral-500 font-medium">Age</span>
-              <span className="block font-bold text-white mt-1">20-30</span>
-            </div>
-            <div className="px-1">
-              <span className="block text-[11px] text-neutral-500 font-medium">Country</span>
-              <span className="block font-bold text-white mt-1">
-                {campaign.country && campaign.country.length > 0 ? campaign.country[0] : "Any"}
-              </span>
-            </div>
+      {/* ── Specs Box ── */}
+      <div className="rounded-2xl border border-neutral-800/80 bg-[#16161B] p-3.5 mb-5">
+        <div className="grid grid-cols-4 divide-x divide-neutral-800/80 text-center text-xs">
+          <div className="px-1">
+            <span className="block text-[11px] text-neutral-400 font-medium">Gender</span>
+            <span className="block font-bold text-white mt-1">Any</span>
+          </div>
+          <div className="px-1">
+            <span className="block text-[11px] text-neutral-400 font-medium">Followers</span>
+            <span className="block font-bold text-white mt-1">
+              {fmtFollowerRange(campaign.minFollowers, campaign.maxFollowers)}
+            </span>
+          </div>
+          <div className="px-1">
+            <span className="block text-[11px] text-neutral-400 font-medium">Age</span>
+            <span className="block font-bold text-white mt-1">20-30</span>
+          </div>
+          <div className="px-1">
+            <span className="block text-[11px] text-neutral-400 font-medium">Country</span>
+            <span className="block font-bold text-white mt-1">
+              {campaign.country && campaign.country.length > 0 ? campaign.country[0] : "Any"}
+            </span>
           </div>
         </div>
       </div>
 
       {/* ── Footer Actions Row ── */}
-      <div className="mt-4 flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link
             href={`/campaigns/${campaign.id}`}
-            className="rounded-full border border-neutral-700 bg-neutral-900/80 px-6 py-2 text-xs font-bold text-white hover:bg-neutral-800 transition-colors"
+            className="rounded-full border border-neutral-700 bg-transparent px-6 py-2 text-xs font-semibold text-white hover:bg-neutral-800 transition-colors"
           >
             View
           </Link>
           <button
             onClick={handleQuickApply}
             disabled={applied || applying}
-            className={`rounded-full border border-[#FF007A]/60 bg-transparent px-6 py-2 text-xs font-bold text-white transition-all hover:bg-[#FF007A] hover:border-[#FF007A] ${
-              applied ? "bg-[#FF007A] text-white opacity-80 cursor-default" : ""
+            className={`rounded-full border border-neutral-700 bg-transparent px-6 py-2 text-xs font-semibold text-white transition-all hover:bg-neutral-800 ${
+              applied ? "bg-[#FF007A] border-[#FF007A] text-white opacity-80 cursor-default" : ""
             }`}
           >
             {applied ? "Applied" : applying ? "Applying..." : "Apply"}
           </button>
-        </div>
-
-        <div className="flex items-center gap-4 text-neutral-400">
           <button
             onClick={() => {
               if (navigator.share) {
@@ -215,19 +207,22 @@ export function CreatorFeedCard({ campaign }: CreatorFeedCardProps) {
                 toast.success("Link copied!");
               }
             }}
-            className="hover:text-white transition-colors"
+            className="text-neutral-400 hover:text-white transition-colors ml-1 p-1"
             title="Share"
           >
             <Send className="h-5 w-5" />
           </button>
-          <button
-            onClick={handleSaveToggle}
-            className={`transition-colors ${saved ? "text-[#FF007A] fill-[#FF007A]" : "hover:text-white"}`}
-            title="Bookmark"
-          >
-            <Bookmark className="h-5 w-5" />
-          </button>
         </div>
+
+        <button
+          onClick={handleSaveToggle}
+          className={`text-neutral-400 p-1 transition-colors ${
+            saved ? "text-[#FF007A] fill-[#FF007A]" : "hover:text-white"
+          }`}
+          title="Bookmark"
+        >
+          <Bookmark className="h-5 w-5" />
+        </button>
       </div>
     </article>
   );
