@@ -52,31 +52,29 @@ export default async function CreatorDashboardPage() {
       country: ["Any"],
       niche: ["Food", "Lifestyle"],
       createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      coverImage:
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900&auto=format&fit=crop&q=80",
+      coverImage: "/images/creator/shoe-banner-clean.png",
       brandProfile: {
         companyName: "Gullylabs",
-        logo: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
+        logo: "/images/creator/gullylabs-logo.png",
         slug: "gullylabs",
       },
     },
     {
       id: "demo-mcdonalds",
-      title: "New Product Launch Campaign",
+      title: "McDonald's Campaign",
       description:
-        "Looking for creators to review and showcase our upcoming summer apparel collection.",
+        "McDonald's is seeking food and lifestyle creators for exciting local menu promotions.",
       deliverableType: "INSTAGRAM_POST",
       deliverableCount: 1,
       minFollowers: 10000,
       maxFollowers: 50000,
       country: ["India"],
-      niche: ["Fashion", "Travel"],
+      niche: ["Food", "Travel"],
       createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      coverImage:
-        "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=900&auto=format&fit=crop&q=80",
+      coverImage: "/images/creator/shoe-banner-clean.png",
       brandProfile: {
         companyName: "Mcdonald's",
-        logo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&auto=format&fit=crop&q=80",
+        logo: "/images/creator/mcdonalds-logo.png",
         slug: "mcdonalds",
       },
     },
@@ -94,7 +92,7 @@ export default async function CreatorDashboardPage() {
           maxFollowers: c.maxFollowers,
           country: c.country,
           createdAt: c.createdAt,
-          coverImage: c.coverImage,
+          coverImage: c.coverImage || "/images/creator/shoe-banner-clean.png",
           niche: c.niche,
           brandProfile: c.brandProfile,
         }))
@@ -130,7 +128,7 @@ export default async function CreatorDashboardPage() {
       ? suggestedBrands.map((b) => ({
           id: b.id,
           name: b.companyName || "Brand",
-          avatar: b.logo,
+          avatar: b.logo || "/images/creator/offduty-logo.png",
           type: "brand" as const,
           slug: b.slug ?? undefined,
         }))
@@ -138,16 +136,14 @@ export default async function CreatorDashboardPage() {
           {
             id: "s1",
             name: "Offduty India",
-            avatar:
-              "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&auto=format&fit=crop&q=80",
+            avatar: "/images/creator/offduty-logo.png",
             type: "brand" as const,
             slug: "offduty-india",
           },
           {
             id: "s2",
             name: "Community",
-            avatar:
-              "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=200&auto=format&fit=crop&q=80",
+            avatar: "/images/creator/community-logo.png",
             type: "community" as const,
           },
         ];

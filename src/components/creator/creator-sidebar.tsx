@@ -4,10 +4,9 @@ import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Home,
-  MessageSquare,
+  MessageCircle,
   Users,
-  Handshake,
-  User,
+  UserPlus,
 } from "lucide-react";
 
 interface CreatorSidebarProps {
@@ -40,7 +39,7 @@ export function CreatorSidebar({ user }: CreatorSidebarProps) {
     {
       label: "Messages",
       href: "/messages",
-      icon: MessageSquare,
+      icon: MessageCircle,
     },
     {
       label: "Community",
@@ -50,35 +49,32 @@ export function CreatorSidebar({ user }: CreatorSidebarProps) {
     {
       label: "Collabs",
       href: "/creator/campaigns",
-      icon: Handshake,
+      icon: UserPlus,
     },
     {
       label: "Profile",
       href: "/creator/profile",
-      icon: User,
+      icon: null,
       isProfile: true,
     },
   ];
 
   return (
-    <aside className="sticky top-0 flex h-screen w-60 flex-col justify-between border-r border-neutral-800/80 bg-[#0A0A0C] px-5 py-6 text-white shrink-0">
-      {/* ── Brand Logo Header ── */}
-      <div className="flex items-center gap-3">
-        <Link href="/creator/dashboard" className="flex items-center gap-2 group">
-          <div className="grid grid-cols-2 gap-1 w-7 h-7">
-            <span className="w-3 h-3 rounded-sm bg-[#FF007A]" />
-            <span className="w-3 h-3 rounded-sm bg-[#E60067]" />
-            <span className="w-3 h-3 rounded-sm bg-[#FF007A]" />
-            <span className="w-3 h-3 rounded-sm bg-[#FFDD00]" />
+    <aside className="sticky top-0 flex h-screen w-64 flex-col bg-[#000000] px-8 py-8 text-white shrink-0">
+      {/* ── Brand Logo (4 Rounded Squares: Pink, Pink, Pink, Yellow) ── */}
+      <div className="mb-16">
+        <Link href="/creator/dashboard" className="inline-block group" aria-label="Brridge Home">
+          <div className="grid grid-cols-2 gap-1.5 w-7 h-7">
+            <span className="w-3 h-3 rounded-[3px] bg-[#FF007A] transition-transform group-hover:scale-105" />
+            <span className="w-3 h-3 rounded-[3px] bg-[#FF007A] transition-transform group-hover:scale-105" />
+            <span className="w-3 h-3 rounded-[3px] bg-[#FF007A] transition-transform group-hover:scale-105" />
+            <span className="w-3 h-3 rounded-[3px] bg-[#FFDD00] transition-transform group-hover:scale-105" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-white group-hover:text-[#FF007A] transition-colors">
-            Brridge
-          </span>
         </Link>
       </div>
 
-      {/* ── Navigation Links ── */}
-      <nav className="my-auto space-y-2">
+      {/* ── Vertical Navigation Links ── */}
+      <nav className="space-y-7">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.exact
@@ -92,13 +88,13 @@ export function CreatorSidebar({ user }: CreatorSidebarProps) {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-3.5 rounded-xl px-3.5 py-3 text-base font-semibold transition-all duration-200 ${
+                className={`flex items-center gap-4 text-base font-semibold transition-colors duration-150 ${
                   isActive
-                    ? "bg-[#FF007A]/10 text-[#FF007A]"
-                    : "text-neutral-300 hover:bg-neutral-900 hover:text-white"
+                    ? "text-[#FF007A]"
+                    : "text-neutral-200 hover:text-white"
                 }`}
               >
-                <Avatar className="h-6 w-6 border border-neutral-700">
+                <Avatar className="h-6 w-6 border border-neutral-700 shrink-0">
                   <AvatarImage src={user.avatar ?? user.image ?? undefined} />
                   <AvatarFallback className="text-[10px] font-bold bg-neutral-800 text-white">
                     {initials}
@@ -113,23 +109,24 @@ export function CreatorSidebar({ user }: CreatorSidebarProps) {
             <Link
               key={item.label}
               href={item.href}
-              className={`flex items-center gap-3.5 rounded-xl px-3.5 py-3 text-base font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-4 text-base font-semibold transition-colors duration-150 ${
                 isActive
-                  ? "text-[#FF007A] font-bold"
-                  : "text-neutral-300 hover:bg-neutral-900 hover:text-white"
+                  ? "text-[#FF007A]"
+                  : "text-neutral-200 hover:text-white"
               }`}
             >
-              <Icon className={`h-5 w-5 ${isActive ? "text-[#FF007A]" : "text-neutral-400"}`} />
+              {Icon && (
+                <Icon
+                  className={`h-5 w-5 shrink-0 ${
+                    isActive ? "text-[#FF007A]" : "text-neutral-300"
+                  }`}
+                />
+              )}
               <span>{item.label}</span>
             </Link>
           );
         })}
       </nav>
-
-      {/* ── Footer / Info ── */}
-      <div className="text-xs text-neutral-500 font-medium">
-        © 2026 Brridge Hub
-      </div>
     </aside>
   );
 }

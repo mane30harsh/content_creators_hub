@@ -85,12 +85,12 @@ export function CreatorHomeView({
   });
 
   return (
-    <div className="flex min-h-screen bg-[#070709] text-white">
+    <div className="flex min-h-screen justify-between bg-[#000000] text-white">
       {/* ── Left Navigation Sidebar ── */}
       <CreatorSidebar user={user} />
 
       {/* ── Center Main Content Column ── */}
-      <main className="flex-1 max-w-4xl px-8 py-6 space-y-6 overflow-y-auto no-scrollbar border-r border-neutral-900/60">
+      <main className="flex-1 max-w-xl mx-auto px-4 py-6 space-y-4 overflow-y-auto no-scrollbar">
         {showNotifications ? (
           <CreatorNotificationsView
             onCloseNotifications={() => setShowNotifications(false)}
