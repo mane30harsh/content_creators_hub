@@ -85,7 +85,7 @@ export function CreatorCommunityView() {
   const [communities, setCommunities] = useState<CommunityItem[]>(DEFAULT_COMMUNITIES);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
-  const [openMenuId, setOpenMenuId] = useState<string | null>("c2"); // default menu open as shown in screenshot
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -145,90 +145,95 @@ export function CreatorCommunityView() {
   });
 
   return (
-    <div className="space-y-6">
-      {/* ── Search Input ── */}
-      <div className="relative py-2 max-w-xl">
-        <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search ...."
-          className="w-full rounded-full border border-neutral-800 bg-[#121216] py-2.5 pl-11 pr-4 text-sm text-white placeholder-neutral-500 focus:border-[#FF007A] focus:outline-none focus:ring-1 focus:ring-[#FF007A] transition-all"
-        />
-      </div>
+    <>
+      {openMenuId && <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} />}
+      <div className="space-y-6">
+        {/* ── Search Input (matching messages page design) ── */}
+        <div className="relative py-2 max-w-xl">
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search community…"
+            className="w-full rounded-xl border border-neutral-800 bg-[#111115] py-2.5 pl-10 pr-4 text-sm text-white placeholder-neutral-600 focus:border-[#FF007A]/60 focus:outline-none focus:ring-1 focus:ring-[#FF007A]/40 transition-all"
+          />
+        </div>
 
-      {/* ── Category Filter Pills ── */}
-      <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-1">
-        {CATEGORY_PILLS.map((pill) => {
-          const isSelected = activeCategory === pill.value;
-          return (
-            <button
-              key={pill.label}
-              onClick={() => setActiveCategory(pill.value)}
-              className={`flex shrink-0 items-center gap-1.5 rounded-full px-6 py-2 text-sm font-semibold transition-all duration-200 ${
-                isSelected
-                  ? "bg-[#FF007A] text-white shadow-md shadow-[#FF007A]/20"
-                  : "border border-neutral-800 bg-[#121215] text-neutral-300 hover:border-neutral-700 hover:text-white"
-              }`}
-            >
-              <span>{pill.label}</span>
-              {pill.hasArrow && !isSelected && (
-                <ChevronRight className="h-4 w-4 text-neutral-400" />
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* ── Communities List ── */}
-      <div className="space-y-3 pt-2">
-        {filteredCommunities.length === 0 ? (
-          <div className="rounded-3xl border border-neutral-800/80 bg-[#101014] p-12 text-center text-neutral-400">
-            <p className="text-base font-semibold text-white">No communities found</p>
-            <p className="mt-1 text-sm text-neutral-500">
-              Try adjusting your search query or filter selection.
-            </p>
-          </div>
-        ) : (
-          filteredCommunities.map((item) => {
-            const isMenuOpen = openMenuId === item.id;
+        {/* ── Category Filter Pills ── */}
+        <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-1">
+          {CATEGORY_PILLS.map((pill) => {
+            const isSelected = activeCategory === pill.value;
             return (
-              <div
-                key={item.id}
-                className="relative flex items-center justify-between gap-4 rounded-2xl border border-transparent p-3 transition-colors hover:border-neutral-800/80 hover:bg-[#121216]"
+              <button
+                key={pill.label}
+                onClick={() => setActiveCategory(pill.value)}
+                className={`flex shrink-0 items-center gap-1.5 rounded-full px-6 py-2 text-sm font-semibold transition-all duration-200 ${
+                  isSelected
+                    ? "bg-[#FF007A] text-white shadow-md shadow-[#FF007A]/20"
+                    : "border border-neutral-800 bg-[#121215] text-neutral-300 hover:border-neutral-700 hover:text-white"
+                }`}
               >
-                <div className="flex items-center gap-4 overflow-hidden">
-                  <Avatar className="h-12 w-12 border border-neutral-800 bg-neutral-900 shrink-0">
-                    <AvatarImage src={item.avatar ?? undefined} />
-                    <AvatarFallback className="bg-neutral-800 text-sm font-bold text-white">
-                      {item.name.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                <span>{pill.label}</span>
+                {pill.hasArrow && !isSelected && (
+                  <ChevronRight className="h-4 w-4 text-neutral-400" />
+                )}
+              </button>
+            );
+          })}
+        </div>
 
-                  <div>
-                    <h4 className="text-base font-bold text-white tracking-tight">{item.name}</h4>
-                    <p className="mt-0.5 text-xs font-semibold text-neutral-400">
-                      {item.lastMessage}{" "}
-                      <span className="font-normal text-neutral-500 ml-2">{item.timeAgo}</span>
-                    </p>
+        {/* ── Communities List ── */}
+        <div className="space-y-3 pt-2">
+          {filteredCommunities.length === 0 ? (
+            <div className="rounded-3xl border border-neutral-800/80 bg-[#101014] p-12 text-center text-neutral-400">
+              <p className="text-base font-semibold text-white">No communities found</p>
+              <p className="mt-1 text-sm text-neutral-500">
+                Try adjusting your search query or filter selection.
+              </p>
+            </div>
+          ) : (
+            filteredCommunities.map((item) => {
+              const isMenuOpen = openMenuId === item.id;
+              return (
+                <div
+                  key={item.id}
+                  className="relative flex items-center justify-between gap-4 rounded-2xl border border-transparent p-3 transition-colors hover:border-neutral-800/80 hover:bg-[#121216]"
+                >
+                  <div className="flex items-center gap-4 overflow-hidden">
+                    <Avatar className="h-12 w-12 border border-neutral-800 bg-neutral-900 shrink-0">
+                      <AvatarImage src={item.avatar ?? undefined} />
+                      <AvatarFallback className="bg-neutral-800 text-sm font-bold text-white">
+                        {item.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div>
+                      <h4 className="text-base font-bold text-white tracking-tight">{item.name}</h4>
+                      <p className="mt-0.5 text-xs font-semibold text-neutral-400">
+                        {item.lastMessage}{" "}
+                        <span className="font-normal text-neutral-500 ml-2">{item.timeAgo}</span>
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-3 shrink-0">
-                  {/* Pink Unread Dot */}
-                  {item.unread && (
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#FF007A] shadow-md shadow-[#FF007A]/50" />
-                  )}
+                  <div className="flex items-center gap-3 shrink-0">
+                    {/* Pink Unread Dot */}
+                    {item.unread && (
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#FF007A] shadow-md shadow-[#FF007A]/50" />
+                    )}
 
-                  {/* Options Button */}
-                  <div className="relative">
-                    <button
-                      onClick={() => setOpenMenuId(isMenuOpen ? null : item.id)}
-                      className="text-neutral-400 hover:text-white p-1 rounded-lg transition-colors"
-                    >
-                      <MoreHorizontal className="h-5 w-5" />
-                    </button>
+                    {/* Options Button */}
+                    <div className="relative">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenMenuId(isMenuOpen ? null : item.id);
+                        }}
+                        className="text-neutral-400 hover:text-white p-1 rounded-lg transition-colors"
+                      >
+                        <MoreHorizontal className="h-5 w-5" />
+                      </button>
 
                     {/* Context Menu Popup (Matching Screenshot Design) */}
                     {isMenuOpen && (
@@ -274,5 +279,6 @@ export function CreatorCommunityView() {
         )}
       </div>
     </div>
-  );
+  </>
+);
 }
