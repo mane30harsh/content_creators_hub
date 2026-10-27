@@ -60,21 +60,21 @@ export function CreatorSidebar({ user }: CreatorSidebarProps) {
   ];
 
   return (
-    <aside className="sticky top-0 flex h-screen w-64 flex-col bg-[#000000] px-8 py-8 text-white shrink-0">
-      {/* ── Brand Logo (4 Rounded Squares: Pink, Pink, Pink, Yellow) ── */}
-      <div className="mb-16">
+    <aside className="sticky top-0 flex h-screen w-72 flex-col bg-[#0A0A0A] pl-14 pr-6 pt-7 text-white shrink-0">
+      {/* ── Brand Logo (Figma Group 1171275230: #FAFF00 & #FF006D) ── */}
+      <div className="mb-20">
         <Link href="/creator/dashboard" className="inline-block group" aria-label="Brridge Home">
-          <div className="grid grid-cols-2 gap-1.5 w-7 h-7">
-            <span className="w-3 h-3 rounded-[3px] bg-[#FF007A] transition-transform group-hover:scale-105" />
-            <span className="w-3 h-3 rounded-[3px] bg-[#FF007A] transition-transform group-hover:scale-105" />
-            <span className="w-3 h-3 rounded-[3px] bg-[#FF007A] transition-transform group-hover:scale-105" />
-            <span className="w-3 h-3 rounded-[3px] bg-[#FFDD00] transition-transform group-hover:scale-105" />
+          <div className="grid grid-cols-2 gap-2 w-10 h-10">
+            <span className="w-4 h-4 rounded-full bg-[#FAFF00] transition-transform group-hover:scale-105" />
+            <span className="w-4 h-4 rounded-none bg-[#FF006D] transition-transform group-hover:scale-105" />
+            <span className="w-4 h-4 rounded-none bg-[#FF006D] transition-transform group-hover:scale-105" />
+            <span className="w-4 h-4 rounded-full bg-[#FAFF00] transition-transform group-hover:scale-105" />
           </div>
         </Link>
       </div>
 
-      {/* ── Vertical Navigation Links ── */}
-      <nav className="space-y-7">
+      {/* ── Vertical Navigation Links (Exact Figma: 22px, font-500, letter-spacing -0.6px) ── */}
+      <nav className="space-y-4">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.exact
@@ -88,10 +88,10 @@ export function CreatorSidebar({ user }: CreatorSidebarProps) {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-4 text-base font-semibold transition-colors duration-150 ${
+                className={`flex items-center gap-[15px] px-5 py-2 text-[22px] font-medium leading-8 tracking-[-0.6px] transition-colors duration-150 ${
                   isActive
-                    ? "text-[#FF007A]"
-                    : "text-neutral-200 hover:text-white"
+                    ? "text-[#FF006D]"
+                    : "text-white hover:text-neutral-200"
                 }`}
               >
                 <Avatar className="h-6 w-6 border border-neutral-700 shrink-0">
@@ -109,16 +109,16 @@ export function CreatorSidebar({ user }: CreatorSidebarProps) {
             <Link
               key={item.label}
               href={item.href}
-              className={`flex items-center gap-4 text-base font-semibold transition-colors duration-150 ${
+              className={`flex items-center gap-[15px] px-5 py-2 text-[22px] font-medium leading-8 tracking-[-0.6px] transition-colors duration-150 ${
                 isActive
-                  ? "text-[#FF007A]"
-                  : "text-neutral-200 hover:text-white"
+                  ? "text-[#FF006D]"
+                  : "text-white hover:text-neutral-200"
               }`}
             >
               {Icon && (
                 <Icon
-                  className={`h-5 w-5 shrink-0 ${
-                    isActive ? "text-[#FF007A]" : "text-neutral-300"
+                  className={`h-6 w-6 shrink-0 ${
+                    isActive ? "text-[#FF006D]" : "text-white"
                   }`}
                 />
               )}

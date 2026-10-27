@@ -85,12 +85,12 @@ export function CreatorHomeView({
   });
 
   return (
-    <div className="flex min-h-screen justify-between bg-[#000000] text-white">
-      {/* ── Left Navigation Sidebar ── */}
+    <div className="flex min-h-screen justify-between bg-[#0A0A0A] text-white">
+      {/* ── Left Navigation Sidebar (Figma: #0A0A0A) ── */}
       <CreatorSidebar user={user} />
 
-      {/* ── Center Main Content Column ── */}
-      <main className="flex-1 max-w-xl mx-auto px-4 py-6 space-y-4 overflow-y-auto no-scrollbar">
+      {/* ── Center Main Content Column (Figma: Post width 458px, container max-w-[490px]) ── */}
+      <main className="flex-1 max-w-[490px] mx-auto px-4 py-7 space-y-6 overflow-y-auto no-scrollbar">
         {showNotifications ? (
           <CreatorNotificationsView
             onCloseNotifications={() => setShowNotifications(false)}
@@ -111,9 +111,9 @@ export function CreatorHomeView({
             />
 
             {/* Feed Cards Section */}
-            <div className="space-y-6 pt-2">
+            <div className="space-y-8 pt-2">
               {filteredCampaigns.length === 0 ? (
-                <div className="rounded-3xl border border-neutral-800/80 bg-[#101014] p-12 text-center text-neutral-400">
+                <div className="rounded-[20px] border border-[rgba(88,88,88,0.4)] bg-[#0A0A0A] p-12 text-center text-neutral-400">
                   <p className="text-base font-semibold text-white">No campaigns found</p>
                   <p className="mt-1 text-sm text-neutral-500">
                     Try resetting your search or selecting a different category filter.

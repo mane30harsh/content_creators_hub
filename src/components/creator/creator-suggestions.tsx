@@ -29,28 +29,30 @@ export function CreatorSuggestions({ suggestions = DEFAULT_SUGGESTIONS }: Creato
   const items = suggestions.length > 0 ? suggestions : DEFAULT_SUGGESTIONS;
 
   return (
-    <aside className="relative sticky top-0 flex h-screen w-80 flex-col border-l border-neutral-900 bg-[#000000] px-6 py-8 text-white shrink-0 hidden xl:flex">
-      {/* ── Header ── */}
-      <div className="flex items-center gap-2.5 mb-8">
-        <Star className="h-5 w-5 text-neutral-300 stroke-[1.5]" />
-        <h3 className="text-xl font-bold tracking-tight text-white">Suggestions</h3>
+    <aside className="relative sticky top-0 flex h-screen w-80 flex-col border-l border-[rgba(88,88,88,0.4)] bg-[#0A0A0A] px-7 py-7 text-white shrink-0 hidden xl:flex">
+      {/* ── Header (Figma: Star 22px stroke 1.5, Heading 22px font-500, letter-spacing -0.6px) ── */}
+      <div className="flex items-center gap-[10px] mb-8">
+        <Star className="h-[22px] w-[22px] stroke-[1.5] text-white" />
+        <h3 className="text-[22px] font-medium leading-8 tracking-[-0.6px] text-white">
+          Suggestions
+        </h3>
       </div>
 
-      {/* ── Suggestions List ── */}
-      <div className="space-y-5">
+      {/* ── Suggestions List (Figma: Avatar 40px, Item Name 16px font-400, Buttons h 36px border rgba(255,0,109,0.4)) ── */}
+      <div className="space-y-4">
         {items.map((item) => (
           <div
             key={item.id}
             className="flex items-center justify-between gap-3"
           >
-            <div className="flex items-center gap-3 overflow-hidden">
-              <Avatar className="h-9 w-9 border border-neutral-800 bg-[#16161B] shrink-0">
+            <div className="flex items-center gap-[15px] overflow-hidden">
+              <Avatar className="h-10 w-10 border border-[rgba(250,255,0,0.22)] bg-[#121216] shrink-0">
                 <AvatarImage src={item.avatar ?? undefined} />
                 <AvatarFallback className="bg-neutral-800 text-xs font-bold text-white">
                   {item.name.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium text-white truncate">
+              <span className="text-[16px] font-normal leading-8 tracking-[-0.6px] text-white truncate">
                 {item.name}
               </span>
             </div>
@@ -59,13 +61,13 @@ export function CreatorSuggestions({ suggestions = DEFAULT_SUGGESTIONS }: Creato
               {item.type === "brand" ? (
                 <Link
                   href={item.slug ? `/brand/${item.slug}` : "/feed"}
-                  className="inline-block rounded-full border border-neutral-700 bg-transparent px-5 py-1 text-xs font-semibold text-white hover:bg-neutral-800 transition-colors"
+                  className="flex h-[36px] w-[86px] items-center justify-center rounded-[30px] border border-[rgba(255,0,109,0.4)] bg-transparent text-[16px] font-medium leading-8 tracking-[-0.6px] text-white hover:bg-neutral-900 transition-colors"
                 >
                   View
                 </Link>
               ) : (
                 <button
-                  className="rounded-full border border-neutral-700 bg-transparent px-5 py-1 text-xs font-semibold text-white hover:bg-neutral-800 transition-colors"
+                  className="flex h-[36px] w-[86px] items-center justify-center rounded-[30px] border border-[rgba(255,0,109,0.4)] bg-transparent text-[16px] font-medium leading-8 tracking-[-0.6px] text-white hover:bg-neutral-900 transition-colors"
                 >
                   Add
                 </button>
@@ -75,11 +77,11 @@ export function CreatorSuggestions({ suggestions = DEFAULT_SUGGESTIONS }: Creato
         ))}
       </div>
 
-      {/* ── Footer See All ── */}
+      {/* ── Footer See All (Figma: font 16px 500, letter-spacing -0.6px, color #FFFFFF) ── */}
       <div className="mt-8 flex justify-end">
         <Link
           href="/feed"
-          className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+          className="text-[16px] font-medium leading-8 tracking-[-0.6px] text-white hover:text-[#FF006D] transition-colors"
         >
           See all
         </Link>

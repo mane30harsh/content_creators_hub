@@ -105,31 +105,36 @@ export function CreatorFeedCard({ campaign }: CreatorFeedCardProps) {
   };
 
   return (
-    <article className="space-y-3.5">
-      {/* ── Brand Header ── */}
-      <div className="flex items-center justify-between">
+    <article className="w-[458px] space-y-3">
+      {/* ── Brand Header (Figma: Avatar 40px, Title 22px font-500, dot #585858, time 16px #585858) ── */}
+      <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-3">
-          <Avatar className="h-9 w-9 border border-neutral-800 bg-[#121216]">
+          <Avatar className="h-10 w-10 border border-neutral-800 bg-[#121216] shrink-0">
             <AvatarImage src={brandLogo ?? undefined} />
             <AvatarFallback className="bg-neutral-800 text-xs font-bold text-white">
               {brandName.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="flex items-center gap-2">
-            <h4 className="text-base font-bold text-white tracking-tight">{brandName}</h4>
-            <span className="text-xs text-neutral-400 font-medium">· {timeAgo}</span>
+            <h4 className="text-[22px] font-medium leading-8 tracking-[-0.6px] text-white">
+              {brandName}
+            </h4>
+            <span className="h-[3px] w-[3px] rounded-full bg-[#585858]" />
+            <span className="text-[16px] font-medium leading-8 tracking-[-0.6px] text-[#585858]">
+              {timeAgo}
+            </span>
           </div>
         </div>
 
-        <button className="text-neutral-400 hover:text-white p-1 rounded-lg transition-colors">
-          <MoreHorizontal className="h-5 w-5" />
+        <button className="text-white hover:text-[#FF006D] p-1 rounded-lg transition-colors">
+          <MoreHorizontal className="h-6 w-6" />
         </button>
       </div>
 
-      {/* ── Content Card Container ── */}
-      <div className="rounded-2xl border border-neutral-800/80 bg-[#101014] p-4 space-y-3.5">
-        {/* Banner Image */}
-        <div className="relative h-56 w-full overflow-hidden rounded-xl bg-neutral-900">
+      {/* ── Content Card Container (Figma Frame 1171280404: border rgba(88,88,88,0.4), radius 20px, p-5) ── */}
+      <div className="w-[458px] rounded-[20px] border border-[rgba(88,88,88,0.4)] bg-[#0A0A0A] p-[21px] space-y-[15px]">
+        {/* Banner Image (Figma Rectangle 9193: radius 16px, h-[137px]) */}
+        <div className="relative h-[137px] w-full overflow-hidden rounded-[16px] bg-neutral-900">
           <img
             src={campaign.coverImage || defaultCover}
             alt={campaign.title}
@@ -137,39 +142,51 @@ export function CreatorFeedCard({ campaign }: CreatorFeedCardProps) {
           />
         </div>
 
-        {/* Green Deliverable Badge */}
+        {/* Green Deliverable Badge (Figma Frame 1171280406: bg #00B000, radius 30px, h 36px, font 16px #FFFFFF) */}
         <div>
-          <span className="inline-flex rounded-full bg-[#00E639] px-4 py-1 text-xs font-bold text-black shadow-sm">
+          <span className="inline-flex h-[36px] items-center justify-center rounded-[30px] bg-[#00B000] px-[24px] text-[16px] font-normal leading-8 tracking-[-0.6px] text-white shadow-sm">
             {deliverableText}
           </span>
         </div>
 
-        {/* Description */}
-        <p className="text-sm leading-relaxed text-neutral-300 font-normal">
+        {/* Description (Figma: font 16px, leading 19px, color #F3F5F5) */}
+        <p className="text-[16px] font-normal leading-[19px] text-[#F3F5F5]">
           {campaign.description ||
             "McDonald's is seeking food and lifestyle influencers to create engaging content around new offers."}
         </p>
 
-        {/* Specs Box */}
-        <div className="rounded-xl border border-neutral-800/80 bg-[#16161C] p-3">
-          <div className="grid grid-cols-4 divide-x divide-neutral-800/80 text-center text-xs">
-            <div className="px-1">
-              <span className="block text-[11px] text-neutral-500 font-medium">Gender</span>
-              <span className="block font-bold text-white mt-1">Any</span>
+        {/* Specs Box (Figma Frame 1171280397: bg #232323, radius 16px, h 54px, labels #909090 14px, values #F3F5F5 14px) */}
+        <div className="flex h-[54px] w-full items-center justify-center rounded-[16px] bg-[#232323] px-3">
+          <div className="grid w-full grid-cols-4 text-center">
+            <div>
+              <span className="block text-[14px] font-medium leading-[17px] text-[#909090]">
+                Gender
+              </span>
+              <span className="block text-[14px] font-medium leading-[17px] text-[#F3F5F5] mt-0.5">
+                Any
+              </span>
             </div>
-            <div className="px-1">
-              <span className="block text-[11px] text-neutral-500 font-medium">Followers</span>
-              <span className="block font-bold text-white mt-1">
+            <div>
+              <span className="block text-[14px] font-medium leading-[17px] text-[#909090]">
+                Followers
+              </span>
+              <span className="block text-[14px] font-medium leading-[17px] text-[#F3F5F5] mt-0.5">
                 {fmtFollowerRange(campaign.minFollowers, campaign.maxFollowers)}
               </span>
             </div>
-            <div className="px-1">
-              <span className="block text-[11px] text-neutral-500 font-medium">Age</span>
-              <span className="block font-bold text-white mt-1">20-30</span>
+            <div>
+              <span className="block text-[14px] font-medium leading-[17px] text-[#909090]">
+                Age
+              </span>
+              <span className="block text-[14px] font-medium leading-[17px] text-[#F3F5F5] mt-0.5">
+                20-30
+              </span>
             </div>
-            <div className="px-1">
-              <span className="block text-[11px] text-neutral-500 font-medium">Country</span>
-              <span className="block font-bold text-white mt-1">
+            <div>
+              <span className="block text-[14px] font-medium leading-[17px] text-[#909090]">
+                Country
+              </span>
+              <span className="block text-[14px] font-medium leading-[17px] text-[#F3F5F5] mt-0.5">
                 {campaign.country && campaign.country.length > 0 ? campaign.country[0] : "Any"}
               </span>
             </div>
@@ -177,24 +194,29 @@ export function CreatorFeedCard({ campaign }: CreatorFeedCardProps) {
         </div>
       </div>
 
-      {/* ── Footer Actions Row ── */}
-      <div className="flex items-center justify-between pt-0.5">
-        <div className="flex items-center gap-3">
+      {/* ── Footer Actions Row (Figma: View & Apply buttons with radius 30px, h 36px, font 16px 500) ── */}
+      <div className="flex items-center justify-between px-1 pt-1">
+        <div className="flex items-center gap-[10px]">
+          {/* View Button (Figma Frame 1171280406: border rgba(255,0,109,0.4), radius 30px, w 86px, h 36px) */}
           <Link
             href={`/campaigns/${campaign.id}`}
-            className="rounded-full border border-neutral-700 bg-transparent px-6 py-2 text-xs font-semibold text-white hover:bg-neutral-800 transition-colors"
+            className="flex h-[36px] w-[86px] items-center justify-center rounded-[30px] border border-[rgba(255,0,109,0.4)] bg-transparent text-[16px] font-medium leading-8 tracking-[-0.6px] text-white hover:bg-neutral-900 transition-colors"
           >
             View
           </Link>
+
+          {/* Apply Button (Figma Frame 1171280407: bg #FF006D, border rgba(255,0,109,0.4), radius 30px, w 92px, h 36px) */}
           <button
             onClick={handleQuickApply}
             disabled={applied || applying}
-            className={`rounded-full border border-neutral-700 bg-transparent px-6 py-2 text-xs font-semibold text-white transition-all hover:bg-neutral-800 ${
-              applied ? "bg-[#FF007A] border-[#FF007A] text-white opacity-80 cursor-default" : ""
+            className={`flex h-[36px] w-[92px] items-center justify-center rounded-[30px] border border-[rgba(255,0,109,0.4)] bg-[#FF006D] text-[16px] font-medium leading-8 tracking-[-0.6px] text-white transition-all hover:bg-[#e60062] ${
+              applied ? "opacity-80 cursor-default" : ""
             }`}
           >
             {applied ? "Applied" : applying ? "Applying..." : "Apply"}
           </button>
+
+          {/* Send Icon (Figma Iconex/Light/Send: 20px x 20px, white border) */}
           <button
             onClick={() => {
               if (navigator.share) {
@@ -209,21 +231,22 @@ export function CreatorFeedCard({ campaign }: CreatorFeedCardProps) {
                 toast.success("Link copied!");
               }
             }}
-            className="text-neutral-400 hover:text-white transition-colors ml-1 p-1"
+            className="text-white hover:text-[#FF006D] transition-colors ml-2 p-1"
             title="Share"
           >
-            <Send className="h-5 w-5" />
+            <Send className="h-5 w-5 stroke-[1.5]" />
           </button>
         </div>
 
+        {/* Bookmark Icon (Figma Iconex/Light/Bookmark: 14px x 19px, white border) */}
         <button
           onClick={handleSaveToggle}
-          className={`text-neutral-400 p-1 transition-colors ${
-            saved ? "text-[#FF007A] fill-[#FF007A]" : "hover:text-white"
+          className={`text-white p-1 transition-colors ${
+            saved ? "text-[#FF006D] fill-[#FF006D]" : "hover:text-[#FF006D]"
           }`}
           title="Bookmark"
         >
-          <Bookmark className="h-5 w-5" />
+          <Bookmark className="h-5 w-5 stroke-[1.5]" />
         </button>
       </div>
     </article>
