@@ -6,7 +6,7 @@ import {
   Home,
   MessageCircle,
   Users,
-  UserPlus,
+  PlusCircle,
 } from "lucide-react";
 
 interface CreatorSidebarProps {
@@ -49,7 +49,7 @@ export function CreatorSidebar({ user }: CreatorSidebarProps) {
     {
       label: "Collabs",
       href: "/creator/campaigns",
-      icon: UserPlus,
+      icon: PlusCircle,
     },
     {
       label: "Profile",
