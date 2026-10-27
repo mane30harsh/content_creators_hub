@@ -31,9 +31,9 @@ export default async function CommunityPage() {
         avatar: profile?.avatar,
       }}
       suggestions={suggestions}
-      mainClassName="overflow-y-auto no-scrollbar"
+      mainClassName="flex flex-col overflow-hidden"
     >
-      <div className="max-w-4xl">
+      <div className="w-full h-full flex flex-col min-w-0">
         <CreatorCommunityView />
       </div>
     </CreatorPageShell>
